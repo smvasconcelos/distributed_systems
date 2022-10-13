@@ -41,7 +41,7 @@ class Server(threading.Thread):
         self.port = port
         self.routine = False
         self.routines = []
-        self.max_conn = 1
+        self.max_conn = 2
         self.values = [x for x in range(0, 100)]
         self.data = b""
 
@@ -76,7 +76,7 @@ class Server(threading.Thread):
 
                 # add thread to active connections
                 self.connections.append(server_socket)
-                print(f"Pronto para receber mensagens de {sc.getpeername()}")
+                # print(f"Pronto para receber mensagens de {sc.getpeername()}")
                 if len(self.connections) == self.max_conn:
                     self.prepare_routine()
 
@@ -123,6 +123,7 @@ class Server(threading.Thread):
         print("Iniciando rotina ...")
         self.routine = True
         for id, connection in enumerate(self.connections):
+            print(f"Iniciando rontina {id} ...")
             process = Routine(id, connection)
             self.routines.append(process)
             process.start()

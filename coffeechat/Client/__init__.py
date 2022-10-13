@@ -59,11 +59,11 @@ class Client:
         # send.start()
         receive.start()
 
-        self.sock.sendall(
-            "Server: {} acabou de se juntar a equipe, diga ola!".format(
-                self.name
-            ).encode("ascii")
-        )
+        # self.sock.sendall(
+        #     "Server: {} acabou de se juntar a equipe, diga ola!".format(
+        #         self.name
+        #     ).encode("ascii")
+        # )
 
         return receive
 
@@ -76,4 +76,4 @@ class Client:
         Args: text_input(tk.Entry): Objeto tk.Entry destinado à entrada de texto do usuário.
         """
 
-        self.sock.send("{}: {}".format(self.name, "message").encode("ascii"))
+        self.sock.sendall("{}: {}".format(self.name, "message").encode("ascii"))

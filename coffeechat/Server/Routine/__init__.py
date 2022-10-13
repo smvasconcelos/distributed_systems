@@ -23,14 +23,18 @@ class Routine(threading.Thread):
         }
 
     def run(self):
-        with open(f"Files/{self.message['file']['name']}", 'rb') as f:
-            while True:
-                data = f.read(1024)
-                if not data:
-                    break
-                self.message['file']['content'] = data
-                self.connection.send(pickle.dumps(self.message))
+        try:
+            with open(f"Files/{self.message['file']['name']}", 'rb') as f:
+                while True:
+                    data = f.read(1024)
+                    if not data:
+                        break
+                    self.message['file']['content'] = data
+                    self.connection.send(pickle.dumps(self.message))
 
-        self.message['file']['content'] = ""
-        self.message['file']['status'] = "done"
-        self.connection.send(pickle.dumps(json.dumps(self.message)))
+            self.message['file']['content'] = ""
+            self.message['file']['status'] = "done"
+            self.connection.send(pickle.dumps(self.message))
+        except:
+            print("Ocorreu um erro em uma rotina ...")
+

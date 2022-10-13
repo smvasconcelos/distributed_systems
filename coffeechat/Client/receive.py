@@ -73,29 +73,27 @@ class Receive(threading.Thread):
                 print("Loading json ...")
                 self.info = pickle.loads(data)
                 Path(f"RecievedFiles").mkdir(parents=True, exist_ok=True)
-                try:
-                    if self.info:
-                        if self.info["file"]["status"] == "write":
-                            self.file_name = self.info["file"]["name"]
-                            self.program_info = self.info["program"]
-                            with open(
-                                "RecievedFiles/{}".format(self.info["file"]["name"]),
-                                "wb+",
-                            ) as f:
-                                f.write(self.info["file"]["content"])
+                if self.info:
+                    if self.info["file"]["status"] == "write":
+                        self.file_name = self.info["file"]["name"]
+                        self.program_info = self.info["program"]
+                        with open(
+                            "RecievedFiles/{}".format(self.info["file"]["name"]),
+                            "wb+",
+                        ) as f:
+                            f.write(self.info["file"]["content"])
                     else:
                         print("Ocorreu um erro durante o parsign do json...")
-                except:
-                    unzip_file(self.file_name)
-                    print("Inicia a execução do programa depois de extrair o zip ...")
-                    self.file_path = "RecievedFiles/{}/Files".format(self.file_name.replace(".zip", ""))
-                    self.process = Routine(self.file_path, self.program_info)
-                    self.process.start()
-                    self.process.join()
-                    input_file_name = self.program_info["input"]
-                    with open("OutputFiles/{}".format(input_file_name.replace("input", "output")), 'r') as f:
-                        result = f.read()
-                    self.sock.send(f"{self.file_name},done,{result}".encode("ascii"))
+                        unzip_file(self.file_name)
+                        print("Inicia a execução do programa depois de extrair o zip ...")
+                        self.file_path = "RecievedFiles/{}/Files".format(self.file_name.replace(".zip", ""))
+                        self.process = Routine(self.file_path, self.program_info)
+                        self.process.start()
+                        self.process.join()
+                        input_file_name = self.program_info["input"]
+                        with open("OutputFiles/{}".format(input_file_name.replace("input", "output")), 'r') as f:
+                            result = f.read()
+                        self.sock.send(f"{self.file_name},done,{result}".encode("ascii"))
 
 
             else:
