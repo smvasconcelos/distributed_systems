@@ -32,7 +32,7 @@ $ git clone https://github.com/smvasconcelos/tictactoe
 ```
 
 
-Para rodar o projeto preferencialmente inicie um ambiente virtual com :
+Preferencialmente inicie um ambiente virtual com :
 
 ```
 $ pip install virtualenv
@@ -43,7 +43,7 @@ E por último inicie o ambiente virtual e instale as dependências do python par
 
 ```
 $ cd Scripts
-$ activate.bat
+$ activate
 $ cd ..
 $ pip install -r requirements.txt
 ```
