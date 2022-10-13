@@ -24,27 +24,20 @@ Inicialmente certifique-se que o python 3.9 ou superior está instalado na sua m
 
 ## Python
 
-Para rodar o projeto preferencialmente inicie um ambiente virtual com :
-
-```
-$ pip install virtualenv
-$ python -m venv <nome>
-```
-
-ou :
-
-```
-$ python -m pip install virtualenv
-$ python -m venv <nome>
-```
-Em seguida abra a pasta do ambiente e clone o repositório em questão com :
+Para rodar o projeto abra a pasta do ambiente e clone o repositório em questão com :
 
 ```
 $ cd <nome>
 $ git clone https://github.com/smvasconcelos/tictactoe
 ```
 
-Ou caso tenha baixado o projeto, extraia os arquivos na pasta raiz do ambiente virtual.
+
+Para rodar o projeto preferencialmente inicie um ambiente virtual com :
+
+```
+$ pip install virtualenv
+$ python -m venv .
+```
 
 E por último inicie o ambiente virtual e instale as dependências do python para iniciar o projeto :
 
@@ -105,5 +98,5 @@ $ python cliente.py 192.168.0.1
 
 
 ```
-$	pdoc server.py client.py system -o doc
+$	pdoc server.py client.py system -o --force docs
 ```
