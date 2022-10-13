@@ -1,12 +1,12 @@
 """Inicialização do cliente"""
 import argparse
 
-import coffeechat.Client as Client
+import system.Client as Client
 
 if __name__ == "__main__":
 
 	parser = argparse.ArgumentParser(description='CoffeChat Client')
-	parser.add_argument('host', help='Interface the server listens at')
+	parser.add_argument('host', nargs='?', default="localhost", help='Interface the server listens at')
 	parser.add_argument('-p',
 	                    metavar='PORT',
 	                    type=int,

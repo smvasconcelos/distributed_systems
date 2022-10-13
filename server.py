@@ -2,13 +2,13 @@
 import argparse
 import threading
 
-import coffeechat.Server as Server
-import coffeechat.utils as utils
+import system.Server as Server
+import system.utils as utils
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="CoffeChat Server")
-    parser.add_argument("host", help="Interface the server listens at")
+    parser.add_argument("host", nargs='?', default="localhost", help="Interface the server listens at")
     parser.add_argument(
         "-p", metavar="PORT", type=int, default=1060, help="TCP port (default 1060)"
     )
