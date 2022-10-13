@@ -9,11 +9,13 @@ import zipfile
 from datetime import datetime
 from pathlib import Path
 
+from coffeechat.Client.Routine import Routine
+
 
 def unzip_file(file_name):
 
     with zipfile.ZipFile(f"RecievedFiles/{file_name}", 'r') as zip_ref:
-        zip_ref.extractall("RecievedFiles/{}".format(file_name.replace(".zip")))
+        zip_ref.extractall("RecievedFiles/{}".format(file_name.replace(".zip", "")))
 
 class Receive(threading.Thread):
     """
@@ -31,6 +33,9 @@ class Receive(threading.Thread):
         self.name = name
         self.file = None
         self.info = {}
+        self.file_path = "RecievedFiles"
+        self.file_name = ""
+        self.program_info = {}
 
     def run(self):
         """
@@ -71,6 +76,8 @@ class Receive(threading.Thread):
                 try:
                     if self.info:
                         if self.info["file"]["status"] == "write":
+                            self.file_name = self.info["file"]["name"]
+                            self.program_info = self.info["program"]
                             with open(
                                 "RecievedFiles/{}".format(self.info["file"]["name"]),
                                 "wb+",
@@ -79,7 +86,17 @@ class Receive(threading.Thread):
                     else:
                         print("Ocorreu um erro durante o parsign do json...")
                 except:
-                    print("Inicia a execução do programa depois de extrair o zip")
+                    unzip_file(self.file_name)
+                    print("Inicia a execução do programa depois de extrair o zip ...")
+                    self.file_path = "RecievedFiles/{}/Files".format(self.file_name.replace(".zip", ""))
+                    self.process = Routine(self.file_path, self.program_info)
+                    self.process.start()
+                    self.process.join()
+                    input_file_name = self.program_info["input"]
+                    with open("OutputFiles/{}".format(input_file_name.replace("input", "output")), 'r') as f:
+                        result = f.read()
+                    self.sock.send(f"{self.file_name},done,{result}".encode("ascii"))
+
 
             else:
                 # Server has closed the socket, exit the program

@@ -17,7 +17,7 @@ class Routine(threading.Thread):
                 "content": "binary content",
             },
             "program": {
-                "input": "input_{id}.txt",
+                "input": f"input_{id}.txt",
                 "exe": "sure.exe"
             }
         }

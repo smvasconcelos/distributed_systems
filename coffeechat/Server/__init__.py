@@ -1,6 +1,7 @@
 """Configuração do servidor"""
 import json
 import os
+import pickle
 import socket
 import threading
 import zipfile
@@ -42,6 +43,7 @@ class Server(threading.Thread):
         self.routines = []
         self.max_conn = 1
         self.values = [x for x in range(0, 100)]
+        self.data = b""
 
     def run(self):
         """
@@ -63,7 +65,7 @@ class Server(threading.Thread):
         # listen for new client connections
         while True:
             # new connection
-            if len(self.connections) < 1:
+            if len(self.connections) < self.max_conn:
                 sc, sockname = sock.accept()
                 print(f"Nova conexao de {sc.getpeername()} para {sc.getsockname()}")
 
@@ -87,6 +89,7 @@ class Server(threading.Thread):
                 message (str): Mensagem a ser transmitida.
                 source (tuple): Endereço de socket do cliente de origem.
         """
+
         for connection in self.connections:
             if connection.sockname != source:
                 connection.send(message)
@@ -129,4 +132,5 @@ class Server(threading.Thread):
         for process in self.routines:
             process.join()
 
-        #
+        print("Rotinas Finalizadas...")
+        print("Aguardando retorno ...")
