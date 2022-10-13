@@ -23,21 +23,6 @@ class ServerSocket(threading.Thread):
         self.info = []
         self.result = {}
 
-    def sum_result(self, result):
-        data = 0
-        print(f"Somando resultado: {result}")
-        Path(f"Result").mkdir(parents=True, exist_ok=True)
-        my_file = Path("Result/result.txt")
-        if my_file.is_file():
-            print("Somando resultado com arquivo ...")
-            with open("Result/result.txt", "r+") as f:
-                data = f.read()
-
-        with open("Result/result.txt", "w+") as f:
-            print("Gravando resultado em um arquivo ...")
-            f.write(str(result + int(data)))
-
-
     def run(self):
         """
         Recebe dados do cliente conectado e transmite a mensagem para todos os outros clientes.
@@ -49,12 +34,7 @@ class ServerSocket(threading.Thread):
             if message:
                 self.info = message.split(",")
                 try:
-                    self.result = {
-                        "file" : self.info[0],
-                        "status": self.info[1],
-                        "result": self.info[2]
-                    }
-                    self.sum_result(int(self.info[2]))
+                    self.server.sum_result(int(self.info[2]))
                 except:
                     print(f"{self.sockname} diz {message}")
                     self.server.broadcast(message, self.sockname)

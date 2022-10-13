@@ -41,9 +41,21 @@ class Server(threading.Thread):
         self.port = port
         self.routine = False
         self.routines = []
-        self.max_conn = 2
+        self.max_conn = 5
         self.values = [x for x in range(0, 100)]
         self.data = b""
+        self.count = 0
+        self.total = 0
+
+    def sum_result(self, result):
+        self.total += result
+        self.count += 1
+        print(f"Somando total ... {self.total + result}")
+        if self.count == self.max_conn:
+            Path(f"Result").mkdir(parents=True, exist_ok=True)
+            with open("Result/result.txt", "w+") as f:
+                print("Gravando resultado em um arquivo ...")
+                f.write(str(self.total))
 
     def run(self):
         """
