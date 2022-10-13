@@ -5,12 +5,15 @@ import pickle
 import socket
 import threading
 import zipfile
+from gettext import find
 from pathlib import Path
 
+from dotenv import find_dotenv, load_dotenv
 from system.Server import *
 from system.Server.Routine import Routine
 from system.Server.ServerSocket import ServerSocket
 
+load_dotenv(find_dotenv())
 
 def split(a, n):
     """
@@ -54,8 +57,8 @@ class Server(threading.Thread):
         self.port = port
         self.routine = False
         self.routines = []
-        self.max_conn = 4
-        self.values = [x for x in range(0, 100)]
+        self.max_conn = int(os.getenv('MAX_CONN'))
+        self.values = [x for x in range(int(os.getenv('START_VAL')),  int(os.getenv('END_VAL')) + 1)]
         self.data = b""
         self.count = 0
         self.total = 0
@@ -63,11 +66,11 @@ class Server(threading.Thread):
     def sum_result(self, result):
         self.total += result
         self.count += 1
-        print(f"Somando total ... {self.total + result}")
+        print(f"Somando total ... {self.total}")
         if self.count == self.max_conn:
             Path(f"Result").mkdir(parents=True, exist_ok=True)
             with open("Result/result.txt", "w+") as f:
-                print("Gravando resultado em um arquivo ...")
+                print("Gravando resultado em Result/result.txt ...")
                 f.write(str(self.total))
 
     def run(self):
