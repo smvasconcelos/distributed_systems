@@ -61,11 +61,14 @@ $ python server.py
 ```
 $ python server.py 192.168.0.1
 ```
-	Para o cliente é necessário informar o endereço utilizado como parametro no servidor, caso vazio o valor padrão é localhost
+	Para o cliente é necessário informar o endereço utilizado como parametro no servidor,
+	caso vazio o valor padrão é localhost
 ```
 $ python cliente.py 192.168.0.1
 ```
-	Em seguida é possível alterar a variavel de ambiente ```MAX_CONN``` que indica em quantas conexões a rotina iniciará e também em quantas partes será dividido o nosso array de valores para a soma.
+	Em seguida é possível alterar a variavel de ambiente ```MAX_CONN```
+	que indica em quantas conexões a rotina iniciará
+	e também em quantas partes será dividido o nosso array de valores para a soma.
 	É possível também alterar o intervalo em que os valores somados serão gerados indicas também no .env
 ```
 	START_VAL = 0
@@ -88,15 +91,14 @@ $ python cliente.py 192.168.0.1
 	├── RecievedFiles
 	│   ├── file_0.zip -> Arquivo enviado pelo servidor com o programa a ser executado com o seu respectivo input
 	│   └─── file_0
-	│					└──Files
-	│							├── input_0.txt -> Input do programa x
-	│					 		└── program.py -> Arquivo contendo a rotina pra ser executada no cliente
+	│          ├── Files
+	│          ├── input_0.txt -> Input do programa x
+	│          └── program.py -> Arquivo contendo a rotina pra ser executada no cliente
 	└── .env
 
 
 # Gerar documentação
 
-
 ```
-$	pdoc server.py client.py system -o --force docs
+$ pdoc server.py client.py system -o --force docs
 ```
