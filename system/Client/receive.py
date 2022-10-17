@@ -1,10 +1,7 @@
 """Configuração da classe resposável por receber mensagens do servidor"""
-import json
 import os
 import pickle
-import socket
 import threading
-import tkinter as tk
 import zipfile
 from datetime import datetime
 from pathlib import Path

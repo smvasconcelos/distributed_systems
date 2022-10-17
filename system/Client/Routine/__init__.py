@@ -1,4 +1,5 @@
 """Configuração da rotina do cliente"""
+import platform
 import subprocess
 import threading
 from pathlib import Path
@@ -23,10 +24,10 @@ class Routine(threading.Thread):
         input_file = "{}/{}".format(self.folder, self.info["input"])
         output_file = "OutputFiles/{}".format(self.info["input"].replace("input", "output"))
         try:
-            # print(f"python {program} {input_file} {output_file}")
+            python = "python" if platform.system() == "Windows" else "python3"
             subprocess.check_call(
             [
-               "python",
+                python,
                 program,
                 input_file,
                 output_file

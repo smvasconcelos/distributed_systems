@@ -1,6 +1,5 @@
 """Configuração da classe resposável por enviar mensagens para o servidor"""
 import os
-import socket
 import sys
 import threading
 

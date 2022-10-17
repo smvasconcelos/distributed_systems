@@ -1,7 +1,5 @@
 """Configuração do cliente"""
 import socket
-import tkinter as tk
-from datetime import datetime
 
 from system.Client.receive import *
 from system.Client.send import *

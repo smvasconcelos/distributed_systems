@@ -2,8 +2,11 @@
 __pycache__
 Lib
 Scripts
-Files
+Files/*.txt
+Files/*.zip
 OutputFiles
 RecievedFiles
-
-
+bin
+lib64
+lib
+Result
