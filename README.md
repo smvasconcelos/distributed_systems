@@ -56,23 +56,21 @@ $ pip install -r requirements.txt
 $ python server.py
 ```
 
-	É aceito um endereço como terceiro parametro e tem como default localhost
+	É aceito um endereço como parametro de execução e tem como default localhost
 
 ```
 $ python server.py 192.168.0.1
 ```
-	Para o cliente é necessário informar o endereço utilizado como parametro no servidor,
-	caso vazio o valor padrão é localhost
+	Para o broker é necessário informar os endereços utilizados pelos servers no arquivo
+	connections.json que contém um array de objetos contendo cada host e suas portas
+	que serão utilizadas como parametro para iniciar o socket
 ```
-$ python cliente.py 192.168.0.1
+$ python broker.py
 ```
-	Em seguida é possível alterar a variavel de ambiente ```MAX_CONN```
-	que indica em quantas conexões a rotina iniciará
-	e também em quantas partes será dividido o nosso array de valores para a soma.
 	É possível também alterar o intervalo em que os valores somados serão gerados indicas também no .env
 ```
-	START_VAL = 0
-	END_VAL = 100
+  START_VAL = 0
+  END_VAL = 100
 ```
 	Após a execução do código teremos x pastas resultantes, na seguinte estrutura:
 
