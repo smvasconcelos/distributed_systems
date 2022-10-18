@@ -100,5 +100,5 @@ $ python cliente.py 192.168.0.1
 # Gerar documentação
 
 ```
-$ pdoc server.py client.py system -o --force docs
+$ pdoc server.py broker.py system -o docs
 ```

@@ -1,4 +1,4 @@
-"""Configuração da rotina do cliente"""
+"""Configuração da rotina do server"""
 import subprocess
 import threading
 from pathlib import Path
@@ -6,7 +6,7 @@ from pathlib import Path
 
 class Routine(threading.Thread):
     """
-        Executa a rotina enviada pelo servidor
+        Executa a rotina enviada pelo broker
     """
 
     def __init__(self, files_folder, program_info):
@@ -18,6 +18,9 @@ class Routine(threading.Thread):
         Path(f"OutputFiles").mkdir(parents=True, exist_ok=True)
 
     def run(self):
+        """
+            Executa o arquivo enviado com o input recebido
+        """
         print("Executando arquivo recebido...")
         program = "{}/{}".format(self.folder, self.info["exe"])
         input_file = "{}/{}".format(self.folder, self.info["input"])

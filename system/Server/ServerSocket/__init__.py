@@ -1,18 +1,15 @@
 """Configuração da classe resposável por receber mensagens do servidor"""
-import json
 import os
 import pickle
-import socket
 import threading
-import tkinter as tk
 import zipfile
-from datetime import datetime
 from pathlib import Path
 
 from system.Server.Routine import Routine
 
 
 def unzip_file(file_name):
+    """Unzipa um arquivo com o path file_name"""
 
     with zipfile.ZipFile(f"RecievedFiles/{file_name}", 'r') as zip_ref:
         zip_ref.extractall("RecievedFiles/{}".format(file_name.replace(".zip", "")))
@@ -22,9 +19,10 @@ class ServerSocket(threading.Thread):
     A thread de recebimento escuta as mensagens recebidas do servidor.
 
     Attributes:
+
             sock (socket.socket): Objeto socket conectado.
+
             name (str): Nome de usuário fornecido pelo usuário.
-            messages (tk.Listbox): Objeto tk.Listbox que contém todas as mensagens exibidas na GUI.
     """
 
     def __init__(self, sock, name):
@@ -39,8 +37,9 @@ class ServerSocket(threading.Thread):
 
     def run(self):
         """
-        Recebe dados do servidor e os exibe na GUI.
-        Sempre escuta os dados de entrada até que uma das extremidades feche o socket.
+        Recebe os dados do Broker e os unzipa para executar
+        Após iniciar executar, ouve para o termino do processo e enviar o resultado
+        já calculado para o broker somar com o total.
         """
         while True:
             """
@@ -73,7 +72,10 @@ class ServerSocket(threading.Thread):
                 print("Loading json ...")
                 self.info = pickle.loads(data)
                 Path(f"RecievedFiles").mkdir(parents=True, exist_ok=True)
+                # Se não tiver dado erro
                 if self.info:
+                    # E o estado ainda for de escrita
+                    # Salva os bytes do arquivo zip
                     if self.info["file"]["status"] == "write":
                         self.file_name = self.info["file"]["name"]
                         self.program_info = self.info["program"]
@@ -82,6 +84,12 @@ class ServerSocket(threading.Thread):
                             "wb+",
                         ) as f:
                             f.write(self.info["file"]["content"])
+                    # Se não o arquivo já foi enviado e podemos unzipa-lo e iniciar o processo de execução
+                    # Iniciamos a Rotina para chamar o programa enviado
+                    # Assim que o processo termina e é confirmado que o resultado foi salvo em um arquivo
+                    # Retornamos e tentamos abrir o arquivo
+                    # Caso esteja tudo okay, envia o resultado com status done
+                    # Caso não, 0 com o estado de error
                     else:
                         unzip_file(self.file_name)
                         print("Inicia a execução do programa depois de extrair o zip ...")

@@ -7,8 +7,11 @@ class Recieve(threading.Thread):
     A thread de recebimento escuta as mensagens recebidas do servidor.
 
     Attributes:
+
         sock (socket.socket): Objeto socket conectado.
+
         name (str): Nome de usuário fornecido pelo usuário.
+
         messages (tk.Listbox): Objeto tk.Listbox que contém todas as mensagens exibidas na GUI.
     """
 

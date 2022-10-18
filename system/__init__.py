@@ -1,1 +1,1 @@
-"""Modulariza a pasta do servidor e cliente"""
+"""Modulariza a pasta do servidor e suas rotinas"""

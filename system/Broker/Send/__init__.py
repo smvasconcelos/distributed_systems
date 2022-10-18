@@ -1,5 +1,4 @@
 """Configuração da rotina do servidor"""
-import json
 import pickle
 import threading
 

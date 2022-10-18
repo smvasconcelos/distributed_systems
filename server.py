@@ -1,4 +1,4 @@
-"""Inicialização do servidor e sua interface GUI"""
+"""Inicialização do servidor e suas rotinas"""
 import argparse
 import threading
 

@@ -36,34 +36,16 @@
         <h2>API Documentation</h2>
             <ul class="memberlist">
             <li>
-                    <a class="function" href="#split">split</a>
-            </li>
-            <li>
-                    <a class="function" href="#zip_files">zip_files</a>
-            </li>
-            <li>
                     <a class="class" href="#Server">Server</a>
                             <ul class="memberlist">
                         <li>
                                 <a class="function" href="#Server.__init__">Server</a>
                         </li>
                         <li>
-                                <a class="function" href="#Server.sum_result">sum_result</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#Server.run">run</a>
                         </li>
                         <li>
-                                <a class="function" href="#Server.broadcast">broadcast</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#Server.remove_connection">remove_connection</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Server.prepare_routine">prepare_routine</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Server.start_routine">start_routine</a>
                         </li>
                 </ul>
 
@@ -91,229 +73,80 @@
 
                         <label class="view-source-button" for="mod-Server-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">&quot;&quot;&quot;Configuração do servidor&quot;&quot;&quot;</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="kn">import</span> <span class="nn">json</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="kn">import</span> <span class="nn">os</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="kn">import</span> <span class="nn">pickle</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">import</span> <span class="nn">socket</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">import</span> <span class="nn">threading</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">import</span> <span class="nn">zipfile</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="kn">from</span> <span class="nn">system.Server</span> <span class="kn">import</span> <span class="o">*</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="kn">from</span> <span class="nn">system.Server.Routine</span> <span class="kn">import</span> <span class="n">Routine</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="kn">from</span> <span class="nn">system.Server.ServerSocket</span> <span class="kn">import</span> <span class="n">ServerSocket</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>
-</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>
-</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>    <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a><span class="sd">        Divide um array &#39;a&#39; em &#39;n&#39; partes &#39;iguais&#39;.</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>    <span class="n">k</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">n</span><span class="p">)</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>
-</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a>
-</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="k">def</span> <span class="nf">zip_files</span><span class="p">(</span><span class="n">list_files_path</span><span class="p">,</span> <span class="n">output_name</span><span class="p">):</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>    <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="sd">        Zipa uma lista de arquivos &#39;list_files_path&#39; com um output de &#39;output_name&#39;.</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>    <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Files/</span><span class="si">{</span><span class="n">output_name</span><span class="si">}</span><span class="s2">.zip&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">zipF</span><span class="p">:</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a>        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">list_files_path</span><span class="p">:</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>            <span class="n">zipF</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">compress_type</span><span class="o">=</span><span class="n">zipfile</span><span class="o">.</span><span class="n">ZIP_DEFLATED</span><span class="p">)</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>
-</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>
-</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a><span class="k">class</span> <span class="nc">Server</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>    <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a><span class="sd">    Suporta gerenciamento de conexões de servidor.</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>
-</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a><span class="sd">    Attributes:</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a><span class="sd">            connections (list): Lista de objetos ServerSocket que representam as conexões ativas.</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a><span class="sd">            host (str): Endereço IP do socket de escuta.</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="sd">            port (int): Número da porta do socket de escuta.</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a><span class="sd">            routine (bool) : Indica se uma rotina está em execução</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a><span class="sd">            routines (Array&lt;Threading.Thread&gt;): Array com threads de cada rotina</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a><span class="sd">            max_conn (int): Define quantas conexões são necessárias para iniciar a rotina</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="sd">            values (Array&lt;int&gt;): Define os valroes a serem somados pelas rotinas</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a><span class="sd">            data (str) : Utilizado para concatenar respostas que são longas</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a><span class="sd">            count (int) : Conta quantas rotinas terminaram até agora</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="sd">            total (int) : Armazena o total da soma de cada rotina</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>
-</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>        <span class="c1"># list of server sockets objects representing active client connections</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connections</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">routine</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">routines</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">max_conn</span> <span class="o">=</span> <span class="mi">4</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)]</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>    <span class="k">def</span> <span class="nf">sum_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">+=</span> <span class="n">result</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Somando total ... </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">+</span> <span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_conn</span><span class="p">:</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>            <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Result&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Result/result.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gravando resultado em um arquivo ...&quot;</span><span class="p">)</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="p">))</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">        Cria o socket de escuta. O socket de escuta usará a opção SO_REUSEADDR para</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="sd">        permitir a ligação a um endereço de socket usado anteriormente. Este é um aplicativo de pequena escala que</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="sd">        suporta apenas uma conexão em espera por vez.</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="sd">        Para cada nova conexão, um thread ServerSocket é iniciado para facilitar a comunicação com</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="sd">        aquele cliente específico. Todos os objetos ServerSocket são armazenados no atributo connections.</span>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>        <span class="c1"># AF_INET: address family, for IP networking</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>        <span class="c1"># SOCK_STREAM: socket type, for reliable flow-controlled data stream</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>        <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>        <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>        <span class="n">sock</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>        <span class="n">sock</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ouvindo em </span><span class="si">{</span><span class="n">sock</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>        <span class="c1"># listen for new client connections</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>            <span class="c1"># new connection</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_conn</span><span class="p">:</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>                <span class="n">sc</span><span class="p">,</span> <span class="n">sockname</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nova conexao de </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getpeername</span><span class="p">()</span><span class="si">}</span><span class="s2"> para </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>                <span class="c1"># new thread</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>                <span class="n">server_socket</span> <span class="o">=</span> <span class="n">ServerSocket</span><span class="p">(</span><span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">,</span> <span class="n">sockname</span><span class="o">=</span><span class="n">sockname</span><span class="p">,</span> <span class="n">server</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>                <span class="c1"># start thread</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>                <span class="n">server_socket</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>                <span class="c1"># add thread to active connections</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">server_socket</span><span class="p">)</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>                <span class="c1"># print(f&quot;Pronto para receber mensagens de {sc.getpeername()}&quot;)</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_conn</span><span class="p">:</span>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">prepare_routine</span><span class="p">()</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>    <span class="k">def</span> <span class="nf">broadcast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">        Envia uma mensagem para todos os clientes conectados,</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="sd">        exceto a origem da mensagem.</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a><span class="sd">        Args:</span>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="sd">                message (str): Mensagem a ser transmitida.</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a><span class="sd">                source (tuple): Endereço de socket do cliente de origem.</span>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>        <span class="k">for</span> <span class="n">connection</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">:</span>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>            <span class="k">if</span> <span class="n">connection</span><span class="o">.</span><span class="n">sockname</span> <span class="o">!=</span> <span class="n">source</span><span class="p">:</span>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>                <span class="n">connection</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>    <span class="k">def</span> <span class="nf">remove_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection</span><span class="p">):</span>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a><span class="sd">        Remove uma thread ServerSocket do atributo connections.</span>
-</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>
-</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a><span class="sd">        Args:</span>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a><span class="sd">                connection (ServerSocket): Thread ServerSocket a ser removida.</span>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
-</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>
-</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>    <span class="k">def</span> <span class="nf">prepare_routine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a><span class="sd">        Prepara Os dados para executar a rotina</span>
-</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>
-</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a><span class="sd">        Divide o array de valores pela quantidade de conexões e gera os arquivos de input para cada uma delas</span>
-</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>
-</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Preparando rotina ...&quot;</span><span class="p">)</span>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">))</span>
-</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>        <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Files&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>        <span class="k">for</span> <span class="n">conn_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_conn</span><span class="p">):</span>
-</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Files/input_</span><span class="si">{</span><span class="n">conn_id</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">conn_id</span><span class="p">]))</span>
-</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>            <span class="n">zip_files</span><span class="p">(</span>
-</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>                <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Files/input_</span><span class="si">{</span><span class="n">conn_id</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;Files/program.py&quot;</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;file_</span><span class="si">{</span><span class="n">conn_id</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>            <span class="p">)</span>
-</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Zipped [input_</span><span class="si">{</span><span class="n">conn_id</span><span class="si">}</span><span class="s2">.txt, program.py] =&gt; file_</span><span class="si">{</span><span class="n">conn_id</span><span class="si">}</span><span class="s2">.zip ...&quot;</span><span class="p">)</span>
-</span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">start_routine</span><span class="p">()</span>
-</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>
-</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>    <span class="k">def</span> <span class="nf">start_routine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a><span class="sd">            Organiza todos os arquivos relacionado a uma rotina e envia para ser executada pelo cliente</span>
-</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iniciando rotina ...&quot;</span><span class="p">)</span>
-</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">routine</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>        <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">connection</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">):</span>
-</span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Iniciando rontina </span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">)</span>
-</span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>            <span class="n">process</span> <span class="o">=</span> <span class="n">Routine</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">connection</span><span class="p">)</span>
-</span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">routines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">process</span><span class="p">)</span>
-</span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>            <span class="n">process</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-</span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>
-</span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>        <span class="c1"># Espera mandar os arquivos pra todas as conexões</span>
-</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rotinas em execução...&quot;</span><span class="p">)</span>
-</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>        <span class="k">for</span> <span class="n">process</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routines</span><span class="p">:</span>
-</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>            <span class="n">process</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>
-</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rotinas Finalizadas...&quot;</span><span class="p">)</span>
-</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Aguardando retorno ...&quot;</span><span class="p">)</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;Configuração do servidor&quot;&quot;&quot;</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">import</span> <span class="nn">socket</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">import</span> <span class="nn">threading</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">find_dotenv</span><span class="p">,</span> <span class="n">load_dotenv</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span> <span class="nn">system.Server</span> <span class="kn">import</span> <span class="o">*</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span> <span class="nn">system.Server.ServerSocket</span> <span class="kn">import</span> <span class="n">ServerSocket</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="n">load_dotenv</span><span class="p">(</span><span class="n">find_dotenv</span><span class="p">())</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="k">class</span> <span class="nc">Server</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="sd">    Suporta gerenciamento de conexões de servidor.</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">    Attributes:</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">            connections (list): Lista de objetos ServerSocket que representam as conexões ativas.</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">            host (str): Endereço IP do socket de escuta.</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="sd">            port (int): Número da porta do socket de escuta.</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="c1"># list of server sockets objects representing active client connections</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connections</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="sd">        Cria o socket de escuta. O socket de escuta usará a opção SO_REUSEADDR para</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="sd">        permitir a ligação a um endereço de socket usado anteriormente. Este é um aplicativo de pequena escala que</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="sd">        suporta apenas uma conexão em espera por vez.</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="sd">        Para cada nova conexão, um thread ServerSocket é iniciado para facilitar a comunicação com</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="sd">        aquele cliente específico. Todos os objetos ServerSocket são armazenados no atributo connections.</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>        <span class="c1"># AF_INET: address family, for IP networking</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>        <span class="c1"># SOCK_STREAM: socket type, for reliable flow-controlled data stream</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>        <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>        <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>        <span class="n">sock</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>        <span class="n">sock</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ouvindo em </span><span class="si">{</span><span class="n">sock</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>        <span class="c1"># Ouve novas conexões e as inicia</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>            <span class="c1"># new connection</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>            <span class="n">sc</span><span class="p">,</span> <span class="n">sockname</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nova conexao de </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getpeername</span><span class="p">()</span><span class="si">}</span><span class="s2"> para </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>            <span class="c1"># new thread</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>            <span class="n">server_socket</span> <span class="o">=</span> <span class="n">ServerSocket</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">sockname</span><span class="p">)</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>            <span class="c1"># start thread</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>            <span class="n">server_socket</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>            <span class="c1"># add thread to active connections</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">server_socket</span><span class="p">)</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pronto para receber arquivos de </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getpeername</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>    <span class="k">def</span> <span class="nf">remove_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection</span><span class="p">):</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a><span class="sd">        Remove uma thread ServerSocket do atributo connections.</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a><span class="sd">        Args:</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a><span class="sd">                connection (ServerSocket): Thread ServerSocket a ser removida.</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 </span></pre></div>
 
 
             </section>
-                <section id="split">
-                            <input id="split-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">split</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">a</span>, </span><span class="param"><span class="n">n</span></span><span class="return-annotation">):</span></span>
-
-                <label class="view-source-button" for="split-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#split"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="split-16"><a href="#split-16"><span class="linenos">16</span></a><span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-</span><span id="split-17"><a href="#split-17"><span class="linenos">17</span></a>    <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="split-18"><a href="#split-18"><span class="linenos">18</span></a><span class="sd">        Divide um array &#39;a&#39; em &#39;n&#39; partes &#39;iguais&#39;.</span>
-</span><span id="split-19"><a href="#split-19"><span class="linenos">19</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="split-20"><a href="#split-20"><span class="linenos">20</span></a>    <span class="n">k</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">n</span><span class="p">)</span>
-</span><span id="split-21"><a href="#split-21"><span class="linenos">21</span></a>    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Divide um array 'a' em 'n' partes 'iguais'.</p>
-</div>
-
-
-                </section>
-                <section id="zip_files">
-                            <input id="zip_files-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">zip_files</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">list_files_path</span>, </span><span class="param"><span class="n">output_name</span></span><span class="return-annotation">):</span></span>
-
-                <label class="view-source-button" for="zip_files-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#zip_files"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="zip_files-24"><a href="#zip_files-24"><span class="linenos">24</span></a><span class="k">def</span> <span class="nf">zip_files</span><span class="p">(</span><span class="n">list_files_path</span><span class="p">,</span> <span class="n">output_name</span><span class="p">):</span>
-</span><span id="zip_files-25"><a href="#zip_files-25"><span class="linenos">25</span></a>    <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="zip_files-26"><a href="#zip_files-26"><span class="linenos">26</span></a><span class="sd">        Zipa uma lista de arquivos &#39;list_files_path&#39; com um output de &#39;output_name&#39;.</span>
-</span><span id="zip_files-27"><a href="#zip_files-27"><span class="linenos">27</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="zip_files-28"><a href="#zip_files-28"><span class="linenos">28</span></a>    <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Files/</span><span class="si">{</span><span class="n">output_name</span><span class="si">}</span><span class="s2">.zip&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">zipF</span><span class="p">:</span>
-</span><span id="zip_files-29"><a href="#zip_files-29"><span class="linenos">29</span></a>        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">list_files_path</span><span class="p">:</span>
-</span><span id="zip_files-30"><a href="#zip_files-30"><span class="linenos">30</span></a>            <span class="n">zipF</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">compress_type</span><span class="o">=</span><span class="n">zipfile</span><span class="o">.</span><span class="n">ZIP_DEFLATED</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Zipa uma lista de arquivos 'list_files_path' com um output de 'output_name'.</p>
-</div>
-
-
-                </section>
                 <section id="Server">
                             <input id="Server-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr class">
@@ -325,159 +158,79 @@
 
     </div>
     <a class="headerlink" href="#Server"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Server-33"><a href="#Server-33"><span class="linenos"> 33</span></a><span class="k">class</span> <span class="nc">Server</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
-</span><span id="Server-34"><a href="#Server-34"><span class="linenos"> 34</span></a>    <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Server-35"><a href="#Server-35"><span class="linenos"> 35</span></a><span class="sd">    Suporta gerenciamento de conexões de servidor.</span>
-</span><span id="Server-36"><a href="#Server-36"><span class="linenos"> 36</span></a>
-</span><span id="Server-37"><a href="#Server-37"><span class="linenos"> 37</span></a><span class="sd">    Attributes:</span>
-</span><span id="Server-38"><a href="#Server-38"><span class="linenos"> 38</span></a><span class="sd">            connections (list): Lista de objetos ServerSocket que representam as conexões ativas.</span>
-</span><span id="Server-39"><a href="#Server-39"><span class="linenos"> 39</span></a><span class="sd">            host (str): Endereço IP do socket de escuta.</span>
-</span><span id="Server-40"><a href="#Server-40"><span class="linenos"> 40</span></a><span class="sd">            port (int): Número da porta do socket de escuta.</span>
-</span><span id="Server-41"><a href="#Server-41"><span class="linenos"> 41</span></a><span class="sd">            routine (bool) : Indica se uma rotina está em execução</span>
-</span><span id="Server-42"><a href="#Server-42"><span class="linenos"> 42</span></a><span class="sd">            routines (Array&lt;Threading.Thread&gt;): Array com threads de cada rotina</span>
-</span><span id="Server-43"><a href="#Server-43"><span class="linenos"> 43</span></a><span class="sd">            max_conn (int): Define quantas conexões são necessárias para iniciar a rotina</span>
-</span><span id="Server-44"><a href="#Server-44"><span class="linenos"> 44</span></a><span class="sd">            values (Array&lt;int&gt;): Define os valroes a serem somados pelas rotinas</span>
-</span><span id="Server-45"><a href="#Server-45"><span class="linenos"> 45</span></a><span class="sd">            data (str) : Utilizado para concatenar respostas que são longas</span>
-</span><span id="Server-46"><a href="#Server-46"><span class="linenos"> 46</span></a><span class="sd">            count (int) : Conta quantas rotinas terminaram até agora</span>
-</span><span id="Server-47"><a href="#Server-47"><span class="linenos"> 47</span></a><span class="sd">            total (int) : Armazena o total da soma de cada rotina</span>
-</span><span id="Server-48"><a href="#Server-48"><span class="linenos"> 48</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="Server-49"><a href="#Server-49"><span class="linenos"> 49</span></a>
-</span><span id="Server-50"><a href="#Server-50"><span class="linenos"> 50</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
-</span><span id="Server-51"><a href="#Server-51"><span class="linenos"> 51</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="Server-52"><a href="#Server-52"><span class="linenos"> 52</span></a>        <span class="c1"># list of server sockets objects representing active client connections</span>
-</span><span id="Server-53"><a href="#Server-53"><span class="linenos"> 53</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connections</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="Server-54"><a href="#Server-54"><span class="linenos"> 54</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
-</span><span id="Server-55"><a href="#Server-55"><span class="linenos"> 55</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
-</span><span id="Server-56"><a href="#Server-56"><span class="linenos"> 56</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">routine</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="Server-57"><a href="#Server-57"><span class="linenos"> 57</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">routines</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="Server-58"><a href="#Server-58"><span class="linenos"> 58</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">max_conn</span> <span class="o">=</span> <span class="mi">4</span>
-</span><span id="Server-59"><a href="#Server-59"><span class="linenos"> 59</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)]</span>
-</span><span id="Server-60"><a href="#Server-60"><span class="linenos"> 60</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
-</span><span id="Server-61"><a href="#Server-61"><span class="linenos"> 61</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="Server-62"><a href="#Server-62"><span class="linenos"> 62</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="Server-63"><a href="#Server-63"><span class="linenos"> 63</span></a>
-</span><span id="Server-64"><a href="#Server-64"><span class="linenos"> 64</span></a>    <span class="k">def</span> <span class="nf">sum_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-</span><span id="Server-65"><a href="#Server-65"><span class="linenos"> 65</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">+=</span> <span class="n">result</span>
-</span><span id="Server-66"><a href="#Server-66"><span class="linenos"> 66</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="Server-67"><a href="#Server-67"><span class="linenos"> 67</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Somando total ... </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">+</span> <span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="Server-68"><a href="#Server-68"><span class="linenos"> 68</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_conn</span><span class="p">:</span>
-</span><span id="Server-69"><a href="#Server-69"><span class="linenos"> 69</span></a>            <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Result&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="Server-70"><a href="#Server-70"><span class="linenos"> 70</span></a>            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Result/result.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-</span><span id="Server-71"><a href="#Server-71"><span class="linenos"> 71</span></a>                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gravando resultado em um arquivo ...&quot;</span><span class="p">)</span>
-</span><span id="Server-72"><a href="#Server-72"><span class="linenos"> 72</span></a>                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="p">))</span>
-</span><span id="Server-73"><a href="#Server-73"><span class="linenos"> 73</span></a>
-</span><span id="Server-74"><a href="#Server-74"><span class="linenos"> 74</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Server-75"><a href="#Server-75"><span class="linenos"> 75</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Server-76"><a href="#Server-76"><span class="linenos"> 76</span></a><span class="sd">        Cria o socket de escuta. O socket de escuta usará a opção SO_REUSEADDR para</span>
-</span><span id="Server-77"><a href="#Server-77"><span class="linenos"> 77</span></a><span class="sd">        permitir a ligação a um endereço de socket usado anteriormente. Este é um aplicativo de pequena escala que</span>
-</span><span id="Server-78"><a href="#Server-78"><span class="linenos"> 78</span></a><span class="sd">        suporta apenas uma conexão em espera por vez.</span>
-</span><span id="Server-79"><a href="#Server-79"><span class="linenos"> 79</span></a><span class="sd">        Para cada nova conexão, um thread ServerSocket é iniciado para facilitar a comunicação com</span>
-</span><span id="Server-80"><a href="#Server-80"><span class="linenos"> 80</span></a><span class="sd">        aquele cliente específico. Todos os objetos ServerSocket são armazenados no atributo connections.</span>
-</span><span id="Server-81"><a href="#Server-81"><span class="linenos"> 81</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Server-82"><a href="#Server-82"><span class="linenos"> 82</span></a>        <span class="c1"># AF_INET: address family, for IP networking</span>
-</span><span id="Server-83"><a href="#Server-83"><span class="linenos"> 83</span></a>        <span class="c1"># SOCK_STREAM: socket type, for reliable flow-controlled data stream</span>
-</span><span id="Server-84"><a href="#Server-84"><span class="linenos"> 84</span></a>        <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
-</span><span id="Server-85"><a href="#Server-85"><span class="linenos"> 85</span></a>        <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-</span><span id="Server-86"><a href="#Server-86"><span class="linenos"> 86</span></a>        <span class="n">sock</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
-</span><span id="Server-87"><a href="#Server-87"><span class="linenos"> 87</span></a>
-</span><span id="Server-88"><a href="#Server-88"><span class="linenos"> 88</span></a>        <span class="n">sock</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="Server-89"><a href="#Server-89"><span class="linenos"> 89</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ouvindo em </span><span class="si">{</span><span class="n">sock</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="Server-90"><a href="#Server-90"><span class="linenos"> 90</span></a>
-</span><span id="Server-91"><a href="#Server-91"><span class="linenos"> 91</span></a>        <span class="c1"># listen for new client connections</span>
-</span><span id="Server-92"><a href="#Server-92"><span class="linenos"> 92</span></a>        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-</span><span id="Server-93"><a href="#Server-93"><span class="linenos"> 93</span></a>            <span class="c1"># new connection</span>
-</span><span id="Server-94"><a href="#Server-94"><span class="linenos"> 94</span></a>            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_conn</span><span class="p">:</span>
-</span><span id="Server-95"><a href="#Server-95"><span class="linenos"> 95</span></a>                <span class="n">sc</span><span class="p">,</span> <span class="n">sockname</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
-</span><span id="Server-96"><a href="#Server-96"><span class="linenos"> 96</span></a>                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nova conexao de </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getpeername</span><span class="p">()</span><span class="si">}</span><span class="s2"> para </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="Server-97"><a href="#Server-97"><span class="linenos"> 97</span></a>
-</span><span id="Server-98"><a href="#Server-98"><span class="linenos"> 98</span></a>                <span class="c1"># new thread</span>
-</span><span id="Server-99"><a href="#Server-99"><span class="linenos"> 99</span></a>                <span class="n">server_socket</span> <span class="o">=</span> <span class="n">ServerSocket</span><span class="p">(</span><span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">,</span> <span class="n">sockname</span><span class="o">=</span><span class="n">sockname</span><span class="p">,</span> <span class="n">server</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="Server-100"><a href="#Server-100"><span class="linenos">100</span></a>                <span class="c1"># start thread</span>
-</span><span id="Server-101"><a href="#Server-101"><span class="linenos">101</span></a>                <span class="n">server_socket</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-</span><span id="Server-102"><a href="#Server-102"><span class="linenos">102</span></a>
-</span><span id="Server-103"><a href="#Server-103"><span class="linenos">103</span></a>                <span class="c1"># add thread to active connections</span>
-</span><span id="Server-104"><a href="#Server-104"><span class="linenos">104</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">server_socket</span><span class="p">)</span>
-</span><span id="Server-105"><a href="#Server-105"><span class="linenos">105</span></a>                <span class="c1"># print(f&quot;Pronto para receber mensagens de {sc.getpeername()}&quot;)</span>
-</span><span id="Server-106"><a href="#Server-106"><span class="linenos">106</span></a>                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_conn</span><span class="p">:</span>
-</span><span id="Server-107"><a href="#Server-107"><span class="linenos">107</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">prepare_routine</span><span class="p">()</span>
-</span><span id="Server-108"><a href="#Server-108"><span class="linenos">108</span></a>
-</span><span id="Server-109"><a href="#Server-109"><span class="linenos">109</span></a>    <span class="k">def</span> <span class="nf">broadcast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
-</span><span id="Server-110"><a href="#Server-110"><span class="linenos">110</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Server-111"><a href="#Server-111"><span class="linenos">111</span></a><span class="sd">        Envia uma mensagem para todos os clientes conectados,</span>
-</span><span id="Server-112"><a href="#Server-112"><span class="linenos">112</span></a><span class="sd">        exceto a origem da mensagem.</span>
-</span><span id="Server-113"><a href="#Server-113"><span class="linenos">113</span></a>
-</span><span id="Server-114"><a href="#Server-114"><span class="linenos">114</span></a><span class="sd">        Args:</span>
-</span><span id="Server-115"><a href="#Server-115"><span class="linenos">115</span></a><span class="sd">                message (str): Mensagem a ser transmitida.</span>
-</span><span id="Server-116"><a href="#Server-116"><span class="linenos">116</span></a><span class="sd">                source (tuple): Endereço de socket do cliente de origem.</span>
-</span><span id="Server-117"><a href="#Server-117"><span class="linenos">117</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Server-118"><a href="#Server-118"><span class="linenos">118</span></a>
-</span><span id="Server-119"><a href="#Server-119"><span class="linenos">119</span></a>        <span class="k">for</span> <span class="n">connection</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">:</span>
-</span><span id="Server-120"><a href="#Server-120"><span class="linenos">120</span></a>            <span class="k">if</span> <span class="n">connection</span><span class="o">.</span><span class="n">sockname</span> <span class="o">!=</span> <span class="n">source</span><span class="p">:</span>
-</span><span id="Server-121"><a href="#Server-121"><span class="linenos">121</span></a>                <span class="n">connection</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-</span><span id="Server-122"><a href="#Server-122"><span class="linenos">122</span></a>
-</span><span id="Server-123"><a href="#Server-123"><span class="linenos">123</span></a>    <span class="k">def</span> <span class="nf">remove_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection</span><span class="p">):</span>
-</span><span id="Server-124"><a href="#Server-124"><span class="linenos">124</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Server-125"><a href="#Server-125"><span class="linenos">125</span></a><span class="sd">        Remove uma thread ServerSocket do atributo connections.</span>
-</span><span id="Server-126"><a href="#Server-126"><span class="linenos">126</span></a>
-</span><span id="Server-127"><a href="#Server-127"><span class="linenos">127</span></a><span class="sd">        Args:</span>
-</span><span id="Server-128"><a href="#Server-128"><span class="linenos">128</span></a><span class="sd">                connection (ServerSocket): Thread ServerSocket a ser removida.</span>
-</span><span id="Server-129"><a href="#Server-129"><span class="linenos">129</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Server-130"><a href="#Server-130"><span class="linenos">130</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
-</span><span id="Server-131"><a href="#Server-131"><span class="linenos">131</span></a>
-</span><span id="Server-132"><a href="#Server-132"><span class="linenos">132</span></a>    <span class="k">def</span> <span class="nf">prepare_routine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Server-133"><a href="#Server-133"><span class="linenos">133</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Server-134"><a href="#Server-134"><span class="linenos">134</span></a><span class="sd">        Prepara Os dados para executar a rotina</span>
-</span><span id="Server-135"><a href="#Server-135"><span class="linenos">135</span></a>
-</span><span id="Server-136"><a href="#Server-136"><span class="linenos">136</span></a><span class="sd">        Divide o array de valores pela quantidade de conexões e gera os arquivos de input para cada uma delas</span>
-</span><span id="Server-137"><a href="#Server-137"><span class="linenos">137</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Server-138"><a href="#Server-138"><span class="linenos">138</span></a>
-</span><span id="Server-139"><a href="#Server-139"><span class="linenos">139</span></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Preparando rotina ...&quot;</span><span class="p">)</span>
-</span><span id="Server-140"><a href="#Server-140"><span class="linenos">140</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">))</span>
-</span><span id="Server-141"><a href="#Server-141"><span class="linenos">141</span></a>        <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Files&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="Server-142"><a href="#Server-142"><span class="linenos">142</span></a>        <span class="k">for</span> <span class="n">conn_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_conn</span><span class="p">):</span>
-</span><span id="Server-143"><a href="#Server-143"><span class="linenos">143</span></a>            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Files/input_</span><span class="si">{</span><span class="n">conn_id</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-</span><span id="Server-144"><a href="#Server-144"><span class="linenos">144</span></a>                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">conn_id</span><span class="p">]))</span>
-</span><span id="Server-145"><a href="#Server-145"><span class="linenos">145</span></a>            <span class="n">zip_files</span><span class="p">(</span>
-</span><span id="Server-146"><a href="#Server-146"><span class="linenos">146</span></a>                <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Files/input_</span><span class="si">{</span><span class="n">conn_id</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;Files/program.py&quot;</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;file_</span><span class="si">{</span><span class="n">conn_id</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="Server-147"><a href="#Server-147"><span class="linenos">147</span></a>            <span class="p">)</span>
-</span><span id="Server-148"><a href="#Server-148"><span class="linenos">148</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Zipped [input_</span><span class="si">{</span><span class="n">conn_id</span><span class="si">}</span><span class="s2">.txt, program.py] =&gt; file_</span><span class="si">{</span><span class="n">conn_id</span><span class="si">}</span><span class="s2">.zip ...&quot;</span><span class="p">)</span>
-</span><span id="Server-149"><a href="#Server-149"><span class="linenos">149</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">start_routine</span><span class="p">()</span>
-</span><span id="Server-150"><a href="#Server-150"><span class="linenos">150</span></a>
-</span><span id="Server-151"><a href="#Server-151"><span class="linenos">151</span></a>    <span class="k">def</span> <span class="nf">start_routine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Server-152"><a href="#Server-152"><span class="linenos">152</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Server-153"><a href="#Server-153"><span class="linenos">153</span></a><span class="sd">            Organiza todos os arquivos relacionado a uma rotina e envia para ser executada pelo cliente</span>
-</span><span id="Server-154"><a href="#Server-154"><span class="linenos">154</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Server-155"><a href="#Server-155"><span class="linenos">155</span></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iniciando rotina ...&quot;</span><span class="p">)</span>
-</span><span id="Server-156"><a href="#Server-156"><span class="linenos">156</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">routine</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="Server-157"><a href="#Server-157"><span class="linenos">157</span></a>        <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">connection</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">):</span>
-</span><span id="Server-158"><a href="#Server-158"><span class="linenos">158</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Iniciando rontina </span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">)</span>
-</span><span id="Server-159"><a href="#Server-159"><span class="linenos">159</span></a>            <span class="n">process</span> <span class="o">=</span> <span class="n">Routine</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">connection</span><span class="p">)</span>
-</span><span id="Server-160"><a href="#Server-160"><span class="linenos">160</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">routines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">process</span><span class="p">)</span>
-</span><span id="Server-161"><a href="#Server-161"><span class="linenos">161</span></a>            <span class="n">process</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-</span><span id="Server-162"><a href="#Server-162"><span class="linenos">162</span></a>
-</span><span id="Server-163"><a href="#Server-163"><span class="linenos">163</span></a>        <span class="c1"># Espera mandar os arquivos pra todas as conexões</span>
-</span><span id="Server-164"><a href="#Server-164"><span class="linenos">164</span></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rotinas em execução...&quot;</span><span class="p">)</span>
-</span><span id="Server-165"><a href="#Server-165"><span class="linenos">165</span></a>        <span class="k">for</span> <span class="n">process</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routines</span><span class="p">:</span>
-</span><span id="Server-166"><a href="#Server-166"><span class="linenos">166</span></a>            <span class="n">process</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-</span><span id="Server-167"><a href="#Server-167"><span class="linenos">167</span></a>
-</span><span id="Server-168"><a href="#Server-168"><span class="linenos">168</span></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rotinas Finalizadas...&quot;</span><span class="p">)</span>
-</span><span id="Server-169"><a href="#Server-169"><span class="linenos">169</span></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Aguardando retorno ...&quot;</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Server-12"><a href="#Server-12"><span class="linenos">12</span></a><span class="k">class</span> <span class="nc">Server</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+</span><span id="Server-13"><a href="#Server-13"><span class="linenos">13</span></a>    <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Server-14"><a href="#Server-14"><span class="linenos">14</span></a><span class="sd">    Suporta gerenciamento de conexões de servidor.</span>
+</span><span id="Server-15"><a href="#Server-15"><span class="linenos">15</span></a>
+</span><span id="Server-16"><a href="#Server-16"><span class="linenos">16</span></a><span class="sd">    Attributes:</span>
+</span><span id="Server-17"><a href="#Server-17"><span class="linenos">17</span></a>
+</span><span id="Server-18"><a href="#Server-18"><span class="linenos">18</span></a><span class="sd">            connections (list): Lista de objetos ServerSocket que representam as conexões ativas.</span>
+</span><span id="Server-19"><a href="#Server-19"><span class="linenos">19</span></a>
+</span><span id="Server-20"><a href="#Server-20"><span class="linenos">20</span></a><span class="sd">            host (str): Endereço IP do socket de escuta.</span>
+</span><span id="Server-21"><a href="#Server-21"><span class="linenos">21</span></a>
+</span><span id="Server-22"><a href="#Server-22"><span class="linenos">22</span></a><span class="sd">            port (int): Número da porta do socket de escuta.</span>
+</span><span id="Server-23"><a href="#Server-23"><span class="linenos">23</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="Server-24"><a href="#Server-24"><span class="linenos">24</span></a>
+</span><span id="Server-25"><a href="#Server-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+</span><span id="Server-26"><a href="#Server-26"><span class="linenos">26</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="Server-27"><a href="#Server-27"><span class="linenos">27</span></a>        <span class="c1"># list of server sockets objects representing active client connections</span>
+</span><span id="Server-28"><a href="#Server-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connections</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="Server-29"><a href="#Server-29"><span class="linenos">29</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+</span><span id="Server-30"><a href="#Server-30"><span class="linenos">30</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+</span><span id="Server-31"><a href="#Server-31"><span class="linenos">31</span></a>
+</span><span id="Server-32"><a href="#Server-32"><span class="linenos">32</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Server-33"><a href="#Server-33"><span class="linenos">33</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Server-34"><a href="#Server-34"><span class="linenos">34</span></a><span class="sd">        Cria o socket de escuta. O socket de escuta usará a opção SO_REUSEADDR para</span>
+</span><span id="Server-35"><a href="#Server-35"><span class="linenos">35</span></a><span class="sd">        permitir a ligação a um endereço de socket usado anteriormente. Este é um aplicativo de pequena escala que</span>
+</span><span id="Server-36"><a href="#Server-36"><span class="linenos">36</span></a><span class="sd">        suporta apenas uma conexão em espera por vez.</span>
+</span><span id="Server-37"><a href="#Server-37"><span class="linenos">37</span></a><span class="sd">        Para cada nova conexão, um thread ServerSocket é iniciado para facilitar a comunicação com</span>
+</span><span id="Server-38"><a href="#Server-38"><span class="linenos">38</span></a><span class="sd">        aquele cliente específico. Todos os objetos ServerSocket são armazenados no atributo connections.</span>
+</span><span id="Server-39"><a href="#Server-39"><span class="linenos">39</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Server-40"><a href="#Server-40"><span class="linenos">40</span></a>        <span class="c1"># AF_INET: address family, for IP networking</span>
+</span><span id="Server-41"><a href="#Server-41"><span class="linenos">41</span></a>        <span class="c1"># SOCK_STREAM: socket type, for reliable flow-controlled data stream</span>
+</span><span id="Server-42"><a href="#Server-42"><span class="linenos">42</span></a>        <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+</span><span id="Server-43"><a href="#Server-43"><span class="linenos">43</span></a>        <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="Server-44"><a href="#Server-44"><span class="linenos">44</span></a>        <span class="n">sock</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
+</span><span id="Server-45"><a href="#Server-45"><span class="linenos">45</span></a>
+</span><span id="Server-46"><a href="#Server-46"><span class="linenos">46</span></a>        <span class="n">sock</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="Server-47"><a href="#Server-47"><span class="linenos">47</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ouvindo em </span><span class="si">{</span><span class="n">sock</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="Server-48"><a href="#Server-48"><span class="linenos">48</span></a>
+</span><span id="Server-49"><a href="#Server-49"><span class="linenos">49</span></a>        <span class="c1"># Ouve novas conexões e as inicia</span>
+</span><span id="Server-50"><a href="#Server-50"><span class="linenos">50</span></a>        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span><span id="Server-51"><a href="#Server-51"><span class="linenos">51</span></a>            <span class="c1"># new connection</span>
+</span><span id="Server-52"><a href="#Server-52"><span class="linenos">52</span></a>            <span class="n">sc</span><span class="p">,</span> <span class="n">sockname</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+</span><span id="Server-53"><a href="#Server-53"><span class="linenos">53</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nova conexao de </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getpeername</span><span class="p">()</span><span class="si">}</span><span class="s2"> para </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="Server-54"><a href="#Server-54"><span class="linenos">54</span></a>
+</span><span id="Server-55"><a href="#Server-55"><span class="linenos">55</span></a>            <span class="c1"># new thread</span>
+</span><span id="Server-56"><a href="#Server-56"><span class="linenos">56</span></a>            <span class="n">server_socket</span> <span class="o">=</span> <span class="n">ServerSocket</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">sockname</span><span class="p">)</span>
+</span><span id="Server-57"><a href="#Server-57"><span class="linenos">57</span></a>            <span class="c1"># start thread</span>
+</span><span id="Server-58"><a href="#Server-58"><span class="linenos">58</span></a>            <span class="n">server_socket</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span id="Server-59"><a href="#Server-59"><span class="linenos">59</span></a>
+</span><span id="Server-60"><a href="#Server-60"><span class="linenos">60</span></a>            <span class="c1"># add thread to active connections</span>
+</span><span id="Server-61"><a href="#Server-61"><span class="linenos">61</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">server_socket</span><span class="p">)</span>
+</span><span id="Server-62"><a href="#Server-62"><span class="linenos">62</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pronto para receber arquivos de </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getpeername</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="Server-63"><a href="#Server-63"><span class="linenos">63</span></a>
+</span><span id="Server-64"><a href="#Server-64"><span class="linenos">64</span></a>    <span class="k">def</span> <span class="nf">remove_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection</span><span class="p">):</span>
+</span><span id="Server-65"><a href="#Server-65"><span class="linenos">65</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Server-66"><a href="#Server-66"><span class="linenos">66</span></a><span class="sd">        Remove uma thread ServerSocket do atributo connections.</span>
+</span><span id="Server-67"><a href="#Server-67"><span class="linenos">67</span></a>
+</span><span id="Server-68"><a href="#Server-68"><span class="linenos">68</span></a><span class="sd">        Args:</span>
+</span><span id="Server-69"><a href="#Server-69"><span class="linenos">69</span></a><span class="sd">                connection (ServerSocket): Thread ServerSocket a ser removida.</span>
+</span><span id="Server-70"><a href="#Server-70"><span class="linenos">70</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Server-71"><a href="#Server-71"><span class="linenos">71</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Suporta gerenciamento de conexões de servidor.</p>
 
-<p>Attributes:
-        connections (list): Lista de objetos ServerSocket que representam as conexões ativas.
-        host (str): Endereço IP do socket de escuta.
-        port (int): Número da porta do socket de escuta.
-        routine (bool) : Indica se uma rotina está em execução
-        routines (Array<Threading.Thread>): Array com threads de cada rotina
-        max_conn (int): Define quantas conexões são necessárias para iniciar a rotina
-        values (Array<int>): Define os valroes a serem somados pelas rotinas
-        data (str) : Utilizado para concatenar respostas que são longas
-        count (int) : Conta quantas rotinas terminaram até agora
-        total (int) : Armazena o total da soma de cada rotina</p>
+<p>Attributes:</p>
+
+<pre><code>    connections (list): Lista de objetos ServerSocket que representam as conexões ativas.
+
+    host (str): Endereço IP do socket de escuta.
+
+    port (int): Número da porta do socket de escuta.
+</code></pre>
 </div>
 
 
@@ -491,19 +244,12 @@
 
     </div>
     <a class="headerlink" href="#Server.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Server.__init__-50"><a href="#Server.__init__-50"><span class="linenos">50</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
-</span><span id="Server.__init__-51"><a href="#Server.__init__-51"><span class="linenos">51</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="Server.__init__-52"><a href="#Server.__init__-52"><span class="linenos">52</span></a>        <span class="c1"># list of server sockets objects representing active client connections</span>
-</span><span id="Server.__init__-53"><a href="#Server.__init__-53"><span class="linenos">53</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connections</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="Server.__init__-54"><a href="#Server.__init__-54"><span class="linenos">54</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
-</span><span id="Server.__init__-55"><a href="#Server.__init__-55"><span class="linenos">55</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
-</span><span id="Server.__init__-56"><a href="#Server.__init__-56"><span class="linenos">56</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">routine</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="Server.__init__-57"><a href="#Server.__init__-57"><span class="linenos">57</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">routines</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="Server.__init__-58"><a href="#Server.__init__-58"><span class="linenos">58</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">max_conn</span> <span class="o">=</span> <span class="mi">4</span>
-</span><span id="Server.__init__-59"><a href="#Server.__init__-59"><span class="linenos">59</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)]</span>
-</span><span id="Server.__init__-60"><a href="#Server.__init__-60"><span class="linenos">60</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
-</span><span id="Server.__init__-61"><a href="#Server.__init__-61"><span class="linenos">61</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="Server.__init__-62"><a href="#Server.__init__-62"><span class="linenos">62</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Server.__init__-25"><a href="#Server.__init__-25"><span class="linenos">25</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+</span><span id="Server.__init__-26"><a href="#Server.__init__-26"><span class="linenos">26</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="Server.__init__-27"><a href="#Server.__init__-27"><span class="linenos">27</span></a>        <span class="c1"># list of server sockets objects representing active client connections</span>
+</span><span id="Server.__init__-28"><a href="#Server.__init__-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connections</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="Server.__init__-29"><a href="#Server.__init__-29"><span class="linenos">29</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+</span><span id="Server.__init__-30"><a href="#Server.__init__-30"><span class="linenos">30</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
 </span></pre></div>
 
 
@@ -530,32 +276,6 @@ else to the thread.</p>
 
 
                             </div>
-                            <div id="Server.sum_result" class="classattr">
-                                        <input id="Server.sum_result-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">sum_result</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">result</span></span><span class="return-annotation">):</span></span>
-
-                <label class="view-source-button" for="Server.sum_result-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#Server.sum_result"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Server.sum_result-64"><a href="#Server.sum_result-64"><span class="linenos">64</span></a>    <span class="k">def</span> <span class="nf">sum_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-</span><span id="Server.sum_result-65"><a href="#Server.sum_result-65"><span class="linenos">65</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">+=</span> <span class="n">result</span>
-</span><span id="Server.sum_result-66"><a href="#Server.sum_result-66"><span class="linenos">66</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="Server.sum_result-67"><a href="#Server.sum_result-67"><span class="linenos">67</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Somando total ... </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">+</span> <span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="Server.sum_result-68"><a href="#Server.sum_result-68"><span class="linenos">68</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_conn</span><span class="p">:</span>
-</span><span id="Server.sum_result-69"><a href="#Server.sum_result-69"><span class="linenos">69</span></a>            <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Result&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="Server.sum_result-70"><a href="#Server.sum_result-70"><span class="linenos">70</span></a>            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;Result/result.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-</span><span id="Server.sum_result-71"><a href="#Server.sum_result-71"><span class="linenos">71</span></a>                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gravando resultado em um arquivo ...&quot;</span><span class="p">)</span>
-</span><span id="Server.sum_result-72"><a href="#Server.sum_result-72"><span class="linenos">72</span></a>                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="p">))</span>
-</span></pre></div>
-
-
-    
-
-                            </div>
                             <div id="Server.run" class="classattr">
                                         <input id="Server.run-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -567,40 +287,37 @@ else to the thread.</p>
 
     </div>
     <a class="headerlink" href="#Server.run"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Server.run-74"><a href="#Server.run-74"><span class="linenos"> 74</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Server.run-75"><a href="#Server.run-75"><span class="linenos"> 75</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Server.run-76"><a href="#Server.run-76"><span class="linenos"> 76</span></a><span class="sd">        Cria o socket de escuta. O socket de escuta usará a opção SO_REUSEADDR para</span>
-</span><span id="Server.run-77"><a href="#Server.run-77"><span class="linenos"> 77</span></a><span class="sd">        permitir a ligação a um endereço de socket usado anteriormente. Este é um aplicativo de pequena escala que</span>
-</span><span id="Server.run-78"><a href="#Server.run-78"><span class="linenos"> 78</span></a><span class="sd">        suporta apenas uma conexão em espera por vez.</span>
-</span><span id="Server.run-79"><a href="#Server.run-79"><span class="linenos"> 79</span></a><span class="sd">        Para cada nova conexão, um thread ServerSocket é iniciado para facilitar a comunicação com</span>
-</span><span id="Server.run-80"><a href="#Server.run-80"><span class="linenos"> 80</span></a><span class="sd">        aquele cliente específico. Todos os objetos ServerSocket são armazenados no atributo connections.</span>
-</span><span id="Server.run-81"><a href="#Server.run-81"><span class="linenos"> 81</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Server.run-82"><a href="#Server.run-82"><span class="linenos"> 82</span></a>        <span class="c1"># AF_INET: address family, for IP networking</span>
-</span><span id="Server.run-83"><a href="#Server.run-83"><span class="linenos"> 83</span></a>        <span class="c1"># SOCK_STREAM: socket type, for reliable flow-controlled data stream</span>
-</span><span id="Server.run-84"><a href="#Server.run-84"><span class="linenos"> 84</span></a>        <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
-</span><span id="Server.run-85"><a href="#Server.run-85"><span class="linenos"> 85</span></a>        <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-</span><span id="Server.run-86"><a href="#Server.run-86"><span class="linenos"> 86</span></a>        <span class="n">sock</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
-</span><span id="Server.run-87"><a href="#Server.run-87"><span class="linenos"> 87</span></a>
-</span><span id="Server.run-88"><a href="#Server.run-88"><span class="linenos"> 88</span></a>        <span class="n">sock</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="Server.run-89"><a href="#Server.run-89"><span class="linenos"> 89</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ouvindo em </span><span class="si">{</span><span class="n">sock</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="Server.run-90"><a href="#Server.run-90"><span class="linenos"> 90</span></a>
-</span><span id="Server.run-91"><a href="#Server.run-91"><span class="linenos"> 91</span></a>        <span class="c1"># listen for new client connections</span>
-</span><span id="Server.run-92"><a href="#Server.run-92"><span class="linenos"> 92</span></a>        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-</span><span id="Server.run-93"><a href="#Server.run-93"><span class="linenos"> 93</span></a>            <span class="c1"># new connection</span>
-</span><span id="Server.run-94"><a href="#Server.run-94"><span class="linenos"> 94</span></a>            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_conn</span><span class="p">:</span>
-</span><span id="Server.run-95"><a href="#Server.run-95"><span class="linenos"> 95</span></a>                <span class="n">sc</span><span class="p">,</span> <span class="n">sockname</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
-</span><span id="Server.run-96"><a href="#Server.run-96"><span class="linenos"> 96</span></a>                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nova conexao de </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getpeername</span><span class="p">()</span><span class="si">}</span><span class="s2"> para </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="Server.run-97"><a href="#Server.run-97"><span class="linenos"> 97</span></a>
-</span><span id="Server.run-98"><a href="#Server.run-98"><span class="linenos"> 98</span></a>                <span class="c1"># new thread</span>
-</span><span id="Server.run-99"><a href="#Server.run-99"><span class="linenos"> 99</span></a>                <span class="n">server_socket</span> <span class="o">=</span> <span class="n">ServerSocket</span><span class="p">(</span><span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">,</span> <span class="n">sockname</span><span class="o">=</span><span class="n">sockname</span><span class="p">,</span> <span class="n">server</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="Server.run-100"><a href="#Server.run-100"><span class="linenos">100</span></a>                <span class="c1"># start thread</span>
-</span><span id="Server.run-101"><a href="#Server.run-101"><span class="linenos">101</span></a>                <span class="n">server_socket</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-</span><span id="Server.run-102"><a href="#Server.run-102"><span class="linenos">102</span></a>
-</span><span id="Server.run-103"><a href="#Server.run-103"><span class="linenos">103</span></a>                <span class="c1"># add thread to active connections</span>
-</span><span id="Server.run-104"><a href="#Server.run-104"><span class="linenos">104</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">server_socket</span><span class="p">)</span>
-</span><span id="Server.run-105"><a href="#Server.run-105"><span class="linenos">105</span></a>                <span class="c1"># print(f&quot;Pronto para receber mensagens de {sc.getpeername()}&quot;)</span>
-</span><span id="Server.run-106"><a href="#Server.run-106"><span class="linenos">106</span></a>                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_conn</span><span class="p">:</span>
-</span><span id="Server.run-107"><a href="#Server.run-107"><span class="linenos">107</span></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">prepare_routine</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Server.run-32"><a href="#Server.run-32"><span class="linenos">32</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Server.run-33"><a href="#Server.run-33"><span class="linenos">33</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Server.run-34"><a href="#Server.run-34"><span class="linenos">34</span></a><span class="sd">        Cria o socket de escuta. O socket de escuta usará a opção SO_REUSEADDR para</span>
+</span><span id="Server.run-35"><a href="#Server.run-35"><span class="linenos">35</span></a><span class="sd">        permitir a ligação a um endereço de socket usado anteriormente. Este é um aplicativo de pequena escala que</span>
+</span><span id="Server.run-36"><a href="#Server.run-36"><span class="linenos">36</span></a><span class="sd">        suporta apenas uma conexão em espera por vez.</span>
+</span><span id="Server.run-37"><a href="#Server.run-37"><span class="linenos">37</span></a><span class="sd">        Para cada nova conexão, um thread ServerSocket é iniciado para facilitar a comunicação com</span>
+</span><span id="Server.run-38"><a href="#Server.run-38"><span class="linenos">38</span></a><span class="sd">        aquele cliente específico. Todos os objetos ServerSocket são armazenados no atributo connections.</span>
+</span><span id="Server.run-39"><a href="#Server.run-39"><span class="linenos">39</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Server.run-40"><a href="#Server.run-40"><span class="linenos">40</span></a>        <span class="c1"># AF_INET: address family, for IP networking</span>
+</span><span id="Server.run-41"><a href="#Server.run-41"><span class="linenos">41</span></a>        <span class="c1"># SOCK_STREAM: socket type, for reliable flow-controlled data stream</span>
+</span><span id="Server.run-42"><a href="#Server.run-42"><span class="linenos">42</span></a>        <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+</span><span id="Server.run-43"><a href="#Server.run-43"><span class="linenos">43</span></a>        <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="Server.run-44"><a href="#Server.run-44"><span class="linenos">44</span></a>        <span class="n">sock</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
+</span><span id="Server.run-45"><a href="#Server.run-45"><span class="linenos">45</span></a>
+</span><span id="Server.run-46"><a href="#Server.run-46"><span class="linenos">46</span></a>        <span class="n">sock</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="Server.run-47"><a href="#Server.run-47"><span class="linenos">47</span></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ouvindo em </span><span class="si">{</span><span class="n">sock</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="Server.run-48"><a href="#Server.run-48"><span class="linenos">48</span></a>
+</span><span id="Server.run-49"><a href="#Server.run-49"><span class="linenos">49</span></a>        <span class="c1"># Ouve novas conexões e as inicia</span>
+</span><span id="Server.run-50"><a href="#Server.run-50"><span class="linenos">50</span></a>        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span><span id="Server.run-51"><a href="#Server.run-51"><span class="linenos">51</span></a>            <span class="c1"># new connection</span>
+</span><span id="Server.run-52"><a href="#Server.run-52"><span class="linenos">52</span></a>            <span class="n">sc</span><span class="p">,</span> <span class="n">sockname</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+</span><span id="Server.run-53"><a href="#Server.run-53"><span class="linenos">53</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nova conexao de </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getpeername</span><span class="p">()</span><span class="si">}</span><span class="s2"> para </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="Server.run-54"><a href="#Server.run-54"><span class="linenos">54</span></a>
+</span><span id="Server.run-55"><a href="#Server.run-55"><span class="linenos">55</span></a>            <span class="c1"># new thread</span>
+</span><span id="Server.run-56"><a href="#Server.run-56"><span class="linenos">56</span></a>            <span class="n">server_socket</span> <span class="o">=</span> <span class="n">ServerSocket</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">sockname</span><span class="p">)</span>
+</span><span id="Server.run-57"><a href="#Server.run-57"><span class="linenos">57</span></a>            <span class="c1"># start thread</span>
+</span><span id="Server.run-58"><a href="#Server.run-58"><span class="linenos">58</span></a>            <span class="n">server_socket</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span id="Server.run-59"><a href="#Server.run-59"><span class="linenos">59</span></a>
+</span><span id="Server.run-60"><a href="#Server.run-60"><span class="linenos">60</span></a>            <span class="c1"># add thread to active connections</span>
+</span><span id="Server.run-61"><a href="#Server.run-61"><span class="linenos">61</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">server_socket</span><span class="p">)</span>
+</span><span id="Server.run-62"><a href="#Server.run-62"><span class="linenos">62</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pronto para receber arquivos de </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getpeername</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -609,43 +326,6 @@ permitir a ligação a um endereço de socket usado anteriormente. Este é um ap
 suporta apenas uma conexão em espera por vez.
 Para cada nova conexão, um thread ServerSocket é iniciado para facilitar a comunicação com
 aquele cliente específico. Todos os objetos ServerSocket são armazenados no atributo connections.</p>
-</div>
-
-
-                            </div>
-                            <div id="Server.broadcast" class="classattr">
-                                        <input id="Server.broadcast-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">broadcast</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">message</span>, </span><span class="param"><span class="n">source</span></span><span class="return-annotation">):</span></span>
-
-                <label class="view-source-button" for="Server.broadcast-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#Server.broadcast"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Server.broadcast-109"><a href="#Server.broadcast-109"><span class="linenos">109</span></a>    <span class="k">def</span> <span class="nf">broadcast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
-</span><span id="Server.broadcast-110"><a href="#Server.broadcast-110"><span class="linenos">110</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Server.broadcast-111"><a href="#Server.broadcast-111"><span class="linenos">111</span></a><span class="sd">        Envia uma mensagem para todos os clientes conectados,</span>
-</span><span id="Server.broadcast-112"><a href="#Server.broadcast-112"><span class="linenos">112</span></a><span class="sd">        exceto a origem da mensagem.</span>
-</span><span id="Server.broadcast-113"><a href="#Server.broadcast-113"><span class="linenos">113</span></a>
-</span><span id="Server.broadcast-114"><a href="#Server.broadcast-114"><span class="linenos">114</span></a><span class="sd">        Args:</span>
-</span><span id="Server.broadcast-115"><a href="#Server.broadcast-115"><span class="linenos">115</span></a><span class="sd">                message (str): Mensagem a ser transmitida.</span>
-</span><span id="Server.broadcast-116"><a href="#Server.broadcast-116"><span class="linenos">116</span></a><span class="sd">                source (tuple): Endereço de socket do cliente de origem.</span>
-</span><span id="Server.broadcast-117"><a href="#Server.broadcast-117"><span class="linenos">117</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Server.broadcast-118"><a href="#Server.broadcast-118"><span class="linenos">118</span></a>
-</span><span id="Server.broadcast-119"><a href="#Server.broadcast-119"><span class="linenos">119</span></a>        <span class="k">for</span> <span class="n">connection</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">:</span>
-</span><span id="Server.broadcast-120"><a href="#Server.broadcast-120"><span class="linenos">120</span></a>            <span class="k">if</span> <span class="n">connection</span><span class="o">.</span><span class="n">sockname</span> <span class="o">!=</span> <span class="n">source</span><span class="p">:</span>
-</span><span id="Server.broadcast-121"><a href="#Server.broadcast-121"><span class="linenos">121</span></a>                <span class="n">connection</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Envia uma mensagem para todos os clientes conectados,
-exceto a origem da mensagem.</p>
-
-<p>Args:
-        message (str): Mensagem a ser transmitida.
-        source (tuple): Endereço de socket do cliente de origem.</p>
 </div>
 
 
@@ -661,14 +341,14 @@ exceto a origem da mensagem.</p>
 
     </div>
     <a class="headerlink" href="#Server.remove_connection"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Server.remove_connection-123"><a href="#Server.remove_connection-123"><span class="linenos">123</span></a>    <span class="k">def</span> <span class="nf">remove_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection</span><span class="p">):</span>
-</span><span id="Server.remove_connection-124"><a href="#Server.remove_connection-124"><span class="linenos">124</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Server.remove_connection-125"><a href="#Server.remove_connection-125"><span class="linenos">125</span></a><span class="sd">        Remove uma thread ServerSocket do atributo connections.</span>
-</span><span id="Server.remove_connection-126"><a href="#Server.remove_connection-126"><span class="linenos">126</span></a>
-</span><span id="Server.remove_connection-127"><a href="#Server.remove_connection-127"><span class="linenos">127</span></a><span class="sd">        Args:</span>
-</span><span id="Server.remove_connection-128"><a href="#Server.remove_connection-128"><span class="linenos">128</span></a><span class="sd">                connection (ServerSocket): Thread ServerSocket a ser removida.</span>
-</span><span id="Server.remove_connection-129"><a href="#Server.remove_connection-129"><span class="linenos">129</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Server.remove_connection-130"><a href="#Server.remove_connection-130"><span class="linenos">130</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Server.remove_connection-64"><a href="#Server.remove_connection-64"><span class="linenos">64</span></a>    <span class="k">def</span> <span class="nf">remove_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection</span><span class="p">):</span>
+</span><span id="Server.remove_connection-65"><a href="#Server.remove_connection-65"><span class="linenos">65</span></a>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Server.remove_connection-66"><a href="#Server.remove_connection-66"><span class="linenos">66</span></a><span class="sd">        Remove uma thread ServerSocket do atributo connections.</span>
+</span><span id="Server.remove_connection-67"><a href="#Server.remove_connection-67"><span class="linenos">67</span></a>
+</span><span id="Server.remove_connection-68"><a href="#Server.remove_connection-68"><span class="linenos">68</span></a><span class="sd">        Args:</span>
+</span><span id="Server.remove_connection-69"><a href="#Server.remove_connection-69"><span class="linenos">69</span></a><span class="sd">                connection (ServerSocket): Thread ServerSocket a ser removida.</span>
+</span><span id="Server.remove_connection-70"><a href="#Server.remove_connection-70"><span class="linenos">70</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Server.remove_connection-71"><a href="#Server.remove_connection-71"><span class="linenos">71</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -676,83 +356,6 @@ exceto a origem da mensagem.</p>
 
 <p>Args:
         connection (ServerSocket): Thread ServerSocket a ser removida.</p>
-</div>
-
-
-                            </div>
-                            <div id="Server.prepare_routine" class="classattr">
-                                        <input id="Server.prepare_routine-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">prepare_routine</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
-
-                <label class="view-source-button" for="Server.prepare_routine-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#Server.prepare_routine"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Server.prepare_routine-132"><a href="#Server.prepare_routine-132"><span class="linenos">132</span></a>    <span class="k">def</span> <span class="nf">prepare_routine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Server.prepare_routine-133"><a href="#Server.prepare_routine-133"><span class="linenos">133</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Server.prepare_routine-134"><a href="#Server.prepare_routine-134"><span class="linenos">134</span></a><span class="sd">        Prepara Os dados para executar a rotina</span>
-</span><span id="Server.prepare_routine-135"><a href="#Server.prepare_routine-135"><span class="linenos">135</span></a>
-</span><span id="Server.prepare_routine-136"><a href="#Server.prepare_routine-136"><span class="linenos">136</span></a><span class="sd">        Divide o array de valores pela quantidade de conexões e gera os arquivos de input para cada uma delas</span>
-</span><span id="Server.prepare_routine-137"><a href="#Server.prepare_routine-137"><span class="linenos">137</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Server.prepare_routine-138"><a href="#Server.prepare_routine-138"><span class="linenos">138</span></a>
-</span><span id="Server.prepare_routine-139"><a href="#Server.prepare_routine-139"><span class="linenos">139</span></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Preparando rotina ...&quot;</span><span class="p">)</span>
-</span><span id="Server.prepare_routine-140"><a href="#Server.prepare_routine-140"><span class="linenos">140</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">))</span>
-</span><span id="Server.prepare_routine-141"><a href="#Server.prepare_routine-141"><span class="linenos">141</span></a>        <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Files&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="Server.prepare_routine-142"><a href="#Server.prepare_routine-142"><span class="linenos">142</span></a>        <span class="k">for</span> <span class="n">conn_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_conn</span><span class="p">):</span>
-</span><span id="Server.prepare_routine-143"><a href="#Server.prepare_routine-143"><span class="linenos">143</span></a>            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Files/input_</span><span class="si">{</span><span class="n">conn_id</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-</span><span id="Server.prepare_routine-144"><a href="#Server.prepare_routine-144"><span class="linenos">144</span></a>                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">conn_id</span><span class="p">]))</span>
-</span><span id="Server.prepare_routine-145"><a href="#Server.prepare_routine-145"><span class="linenos">145</span></a>            <span class="n">zip_files</span><span class="p">(</span>
-</span><span id="Server.prepare_routine-146"><a href="#Server.prepare_routine-146"><span class="linenos">146</span></a>                <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Files/input_</span><span class="si">{</span><span class="n">conn_id</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;Files/program.py&quot;</span><span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;file_</span><span class="si">{</span><span class="n">conn_id</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="Server.prepare_routine-147"><a href="#Server.prepare_routine-147"><span class="linenos">147</span></a>            <span class="p">)</span>
-</span><span id="Server.prepare_routine-148"><a href="#Server.prepare_routine-148"><span class="linenos">148</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Zipped [input_</span><span class="si">{</span><span class="n">conn_id</span><span class="si">}</span><span class="s2">.txt, program.py] =&gt; file_</span><span class="si">{</span><span class="n">conn_id</span><span class="si">}</span><span class="s2">.zip ...&quot;</span><span class="p">)</span>
-</span><span id="Server.prepare_routine-149"><a href="#Server.prepare_routine-149"><span class="linenos">149</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">start_routine</span><span class="p">()</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Prepara Os dados para executar a rotina</p>
-
-<p>Divide o array de valores pela quantidade de conexões e gera os arquivos de input para cada uma delas</p>
-</div>
-
-
-                            </div>
-                            <div id="Server.start_routine" class="classattr">
-                                        <input id="Server.start_routine-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">start_routine</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
-
-                <label class="view-source-button" for="Server.start_routine-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#Server.start_routine"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Server.start_routine-151"><a href="#Server.start_routine-151"><span class="linenos">151</span></a>    <span class="k">def</span> <span class="nf">start_routine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Server.start_routine-152"><a href="#Server.start_routine-152"><span class="linenos">152</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Server.start_routine-153"><a href="#Server.start_routine-153"><span class="linenos">153</span></a><span class="sd">            Organiza todos os arquivos relacionado a uma rotina e envia para ser executada pelo cliente</span>
-</span><span id="Server.start_routine-154"><a href="#Server.start_routine-154"><span class="linenos">154</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Server.start_routine-155"><a href="#Server.start_routine-155"><span class="linenos">155</span></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iniciando rotina ...&quot;</span><span class="p">)</span>
-</span><span id="Server.start_routine-156"><a href="#Server.start_routine-156"><span class="linenos">156</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">routine</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="Server.start_routine-157"><a href="#Server.start_routine-157"><span class="linenos">157</span></a>        <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">connection</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">):</span>
-</span><span id="Server.start_routine-158"><a href="#Server.start_routine-158"><span class="linenos">158</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Iniciando rontina </span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">)</span>
-</span><span id="Server.start_routine-159"><a href="#Server.start_routine-159"><span class="linenos">159</span></a>            <span class="n">process</span> <span class="o">=</span> <span class="n">Routine</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">connection</span><span class="p">)</span>
-</span><span id="Server.start_routine-160"><a href="#Server.start_routine-160"><span class="linenos">160</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">routines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">process</span><span class="p">)</span>
-</span><span id="Server.start_routine-161"><a href="#Server.start_routine-161"><span class="linenos">161</span></a>            <span class="n">process</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-</span><span id="Server.start_routine-162"><a href="#Server.start_routine-162"><span class="linenos">162</span></a>
-</span><span id="Server.start_routine-163"><a href="#Server.start_routine-163"><span class="linenos">163</span></a>        <span class="c1"># Espera mandar os arquivos pra todas as conexões</span>
-</span><span id="Server.start_routine-164"><a href="#Server.start_routine-164"><span class="linenos">164</span></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rotinas em execução...&quot;</span><span class="p">)</span>
-</span><span id="Server.start_routine-165"><a href="#Server.start_routine-165"><span class="linenos">165</span></a>        <span class="k">for</span> <span class="n">process</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routines</span><span class="p">:</span>
-</span><span id="Server.start_routine-166"><a href="#Server.start_routine-166"><span class="linenos">166</span></a>            <span class="n">process</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-</span><span id="Server.start_routine-167"><a href="#Server.start_routine-167"><span class="linenos">167</span></a>
-</span><span id="Server.start_routine-168"><a href="#Server.start_routine-168"><span class="linenos">168</span></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rotinas Finalizadas...&quot;</span><span class="p">)</span>
-</span><span id="Server.start_routine-169"><a href="#Server.start_routine-169"><span class="linenos">169</span></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Aguardando retorno ...&quot;</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Organiza todos os arquivos relacionado a uma rotina e envia para ser executada pelo cliente</p>
 </div>
 
 
