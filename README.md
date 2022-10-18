@@ -56,7 +56,7 @@ Para executar o servidor socket utilize:
 $ python server.py
 ```
 
-	É aceito um endereço como parametro de execução e tem como default localhost
+É aceito um endereço como parametro de execução e tem como default localhost
 
 ```
 $ python server.py 192.168.0.1
