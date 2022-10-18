@@ -18,7 +18,7 @@ class Routine(threading.Thread):
         Path(f"OutputFiles").mkdir(parents=True, exist_ok=True)
 
     def run(self):
-        print("Summing file content ...")
+        print("Executando arquivo recebido...")
         program = "{}/{}".format(self.folder, self.info["exe"])
         input_file = "{}/{}".format(self.folder, self.info["input"])
         output_file = "OutputFiles/{}".format(self.info["input"].replace("input", "output"))
