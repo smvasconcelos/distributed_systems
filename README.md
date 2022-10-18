@@ -50,7 +50,7 @@ $ pip install -r requirements.txt
 
 # Executando e testando
 
-	Para executar o servidor socket utilize:
+Para executar o servidor socket utilize:
 
 ```
 $ python server.py
@@ -61,18 +61,18 @@ $ python server.py
 ```
 $ python server.py 192.168.0.1
 ```
-	Para o broker é necessário informar os endereços utilizados pelos servers no arquivo
-	connections.json que contém um array de objetos contendo cada host e suas portas
-	que serão utilizadas como parametro para iniciar o socket
+Para o broker é necessário informar os endereços utilizados pelos servers no arquivo
+connections.json que contém um array de objetos contendo cada host e suas portas
+que serão utilizadas como parametro para iniciar o socket
 ```
 $ python broker.py
 ```
-	É possível também alterar o intervalo em que os valores somados serão gerados indicas também no .env
+É possível também alterar o intervalo em que os valores somados serão gerados indicas também no .env
 ```
   START_VAL = 0
   END_VAL = 100
 ```
-	Após a execução do código teremos x pastas resultantes, na seguinte estrutura:
+Após a execução do código teremos x pastas resultantes, na seguinte estrutura:
 
 	root
 	├── Files
