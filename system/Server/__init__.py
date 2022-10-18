@@ -104,7 +104,7 @@ class Server(threading.Thread):
 
                 # add thread to active connections
                 self.connections.append(server_socket)
-                # print(f"Pronto para receber mensagens de {sc.getpeername()}")
+                print(f"Pronto para receber arquivos de {sc.getpeername()}")
                 # ! Forma antiga
                 # ! if len(self.connections) == self.max_conn:
                 # !     self.prepare_routine()

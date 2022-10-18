@@ -2,6 +2,7 @@
 import json
 import os
 import socket
+import threading
 import tkinter as tk
 import zipfile
 from datetime import datetime
@@ -28,7 +29,7 @@ def zip_files(list_files_path, output_name):
         for file in list_files_path:
             zipF.write(file, compress_type=zipfile.ZIP_DEFLATED)
 
-class Broker:
+class Broker(threading.Thread):
     """
     Oferece suporte ao gerenciamento de conexões cliente-servidor e integração com a GUI.
 
@@ -41,6 +42,7 @@ class Broker:
     """
 
     def __init__(self, hosts):
+        super().__init__()
         self.hosts = hosts
         self.name = None
         self.messages = None

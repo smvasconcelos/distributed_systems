@@ -5,7 +5,7 @@
 			"port": 1060
 		},
 		{
-			"host": "192.168.0.1",
+			"host": "localhost",
 			"port": 2000
 		}
 	]

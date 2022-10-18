@@ -29,12 +29,13 @@ class Recieve(threading.Thread):
         """
         while True:
             """
-                message : "file_name", int result,  "status",
+                message : "file_name", "status", int result
             """
-            message = self.sock.recv(1024).decode("asciii")
+            message = self.sock.recv(1024).decode("ascii")
             if message:
-                file_name , result, status, = message.split(",")
+                print(message)
+                file_name , status, result = message.split(",")
                 if status == "done":
-                    self.broker.sum_result(result)
+                    self.broker.sum_result(int(result))
                 else:
                     print(f"Ocorreu um erro executando o processo com o arquivo de nome: {file_name}")
