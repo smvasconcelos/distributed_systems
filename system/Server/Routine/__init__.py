@@ -1,42 +1,44 @@
-"""Configuração da rotina do servidor"""
-import json
-import pickle
+"""Configuração da rotina do cliente"""
+import subprocess
 import threading
+from pathlib import Path
 
 
 class Routine(threading.Thread):
     """
-        Zipa todos os arquivos e os envia para o cliente executar a rotina
+        Executa a rotina enviada pelo servidor
     """
-    def __init__(self, id,connection):
+
+    def __init__(self, files_folder, program_info):
         super().__init__()
-        self.connection = connection
-        self.id = id
-        self.message = {
-            "file":{
-                "status": "write",
-                "name": f"file_{id}.zip",
-                "content": "binary content",
-            },
-            "program": {
-                "input": f"input_{id}.txt",
-                "exe": "program.py"
-            }
-        }
+        self.folder = files_folder
+        self.info = program_info
+        self.output_path = ""
+        self.done = False
+        Path(f"OutputFiles").mkdir(parents=True, exist_ok=True)
 
     def run(self):
+        print("Summing file content ...")
+        program = "{}/{}".format(self.folder, self.info["exe"])
+        input_file = "{}/{}".format(self.folder, self.info["input"])
+        output_file = "OutputFiles/{}".format(self.info["input"].replace("input", "output"))
         try:
-            with open(f"Files/{self.message['file']['name']}", 'rb') as f:
-                while True:
-                    data = f.read(1024)
-                    if not data:
+            # print(f"python {program} {input_file} {output_file}")
+            subprocess.check_call(
+            [
+               "python",
+                program,
+                input_file,
+                output_file
+            ])
+            while True:
+                output_file = Path(output_file)
+                try:
+                    print(output_file.is_file())
+                    if output_file.is_file():
+                        open(output_file, 'rb')
                         break
-                    self.message['file']['content'] = data
-                    self.connection.send(pickle.dumps(self.message))
-
-            self.message['file']['content'] = ""
-            self.message['file']['status'] = "done"
-            self.connection.send(pickle.dumps(self.message))
+                except:
+                    pass
         except:
-            print("Ocorreu um erro em uma rotina ...")
-
+            print("Ocorreu um erro executando o programa enviado...")

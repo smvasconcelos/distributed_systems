@@ -98,15 +98,16 @@ class Server(threading.Thread):
                 print(f"Nova conexao de {sc.getpeername()} para {sc.getsockname()}")
 
                 # new thread
-                server_socket = ServerSocket(sc=sc, sockname=sockname, server=self)
+                server_socket = ServerSocket(sc, sockname)
                 # start thread
                 server_socket.start()
 
                 # add thread to active connections
                 self.connections.append(server_socket)
                 # print(f"Pronto para receber mensagens de {sc.getpeername()}")
-                if len(self.connections) == self.max_conn:
-                    self.prepare_routine()
+                # ! Forma antiga
+                # ! if len(self.connections) == self.max_conn:
+                # !     self.prepare_routine()
 
     def broadcast(self, message, source):
         """

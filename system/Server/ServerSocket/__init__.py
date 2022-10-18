@@ -9,7 +9,7 @@ import zipfile
 from datetime import datetime
 from pathlib import Path
 
-from system.Client.Routine import Routine
+from system.Server.Routine import Routine
 
 
 def unzip_file(file_name):
@@ -17,7 +17,7 @@ def unzip_file(file_name):
     with zipfile.ZipFile(f"RecievedFiles/{file_name}", 'r') as zip_ref:
         zip_ref.extractall("RecievedFiles/{}".format(file_name.replace(".zip", "")))
 
-class Receive(threading.Thread):
+class ServerSocket(threading.Thread):
     """
     A thread de recebimento escuta as mensagens recebidas do servidor.
 

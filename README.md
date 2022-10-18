@@ -27,8 +27,8 @@ Inicialmente certifique-se que o python 3.9 ou superior está instalado na sua m
 Para rodar o projeto abra a pasta do ambiente e clone o repositório em questão com :
 
 ```
-$ cd <nome>
-$ git clone https://github.com/smvasconcelos/tictactoe
+$ git clone https://github.com/smvasconcelos/distributed_systems.git
+$ cd distributed_systems
 ```
 
 
