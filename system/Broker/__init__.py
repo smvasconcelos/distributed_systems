@@ -40,7 +40,7 @@ class Broker(threading.Thread):
     def __init__(self, hosts):
         super().__init__()
         self.hosts = hosts
-        self.max_conn = len(hosts)
+        self.max_conn = len(hosts["connections"])
         self.values = [
             x for x in range(int(os.getenv("START_VAL")), int(os.getenv("END_VAL")) + 1)
         ]
@@ -83,14 +83,14 @@ class Broker(threading.Thread):
         Divide o array de valores pela quantidade de conexões e gera os arquivos de input para cada uma delas
         """
 
-        print("Preparando rotina ...")
+        print("Preparando rotinas ...")
         self.values = split(self.values, len(self.connections))
         Path(f"Files").mkdir(parents=True, exist_ok=True)
-        for conn_id in range(0, self.max_conn + 1):
+        for conn_id in range(0, self.max_conn):
             with open(f"Files/input_{conn_id}.txt", "w+") as f:
                 f.write(json.dumps(self.values[conn_id]))
             zip_files(
-                [f"Files/input_{conn_id}.txt", "Files/program.py"], f"file_{conn_id}"
+                [f"Files/input_{conn_id}.txt", "Files/program.exe"], f"file_{conn_id}"
             )
             print(f"Zipped [input_{conn_id}.txt, program.py] => file_{conn_id}.zip ...")
         self.start_routine()
@@ -99,10 +99,10 @@ class Broker(threading.Thread):
         """
         Organiza todos os arquivos relacionado a uma rotina e envia para ser executada pelo cliente
         """
-        print("Iniciando rotina ...")
+        print("Iniciando rotinas ...")
         self.routine = True
         for id, connection in enumerate(self.connections):
-            print(f"Iniciando rontina {id} ...")
+            print(f"Iniciando rotina {id} ...")
             process = Send(id, connection)
             self.routines.append(process)
             process.start()

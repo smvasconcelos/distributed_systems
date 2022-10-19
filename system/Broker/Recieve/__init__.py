@@ -36,7 +36,6 @@ class Recieve(threading.Thread):
             """
             message = self.sock.recv(1024).decode("ascii")
             if message:
-                print(message)
                 file_name , status, result = message.split(",")
                 if status == "done":
                     self.broker.sum_result(int(result))

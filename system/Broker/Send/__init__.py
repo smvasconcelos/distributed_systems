@@ -15,19 +15,20 @@ class Send(threading.Thread):
             "file":{
                 "status": "write",
                 "name": f"file_{id}.zip",
-                "content": "binary content",
+                "content": "",
             },
             "program": {
                 "input": f"input_{id}.txt",
-                "exe": "program.py"
+                "exe": "program.exe"
             }
         }
 
     def run(self):
         try:
             with open(f"Files/{self.message['file']['name']}", 'rb') as f:
+                print("Enviando arquivo {}...".format(self.message["program"]["input"]))
                 while True:
-                    data = f.read(1024)
+                    data = f.read()
                     if not data:
                         break
                     self.message['file']['content'] = data
@@ -36,6 +37,7 @@ class Send(threading.Thread):
             self.message['file']['content'] = ""
             self.message['file']['status'] = "done"
             self.connection.send(pickle.dumps(self.message))
+            print("Arquivo enviado {}...".format(self.message["program"]["input"]))
         except:
             print("Ocorreu um erro enviando ...")
 

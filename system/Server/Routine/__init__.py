@@ -26,18 +26,11 @@ class Routine(threading.Thread):
         input_file = "{}/{}".format(self.folder, self.info["input"])
         output_file = "OutputFiles/{}".format(self.info["input"].replace("input", "output"))
         try:
-            # print(f"python {program} {input_file} {output_file}")
-            subprocess.check_call(
-            [
-               "python",
-                program,
-                input_file,
-                output_file
-            ])
+            print(f"python {program} {input_file} {output_file}")
+            subprocess.run([program, input_file, output_file])
             while True:
                 output_file = Path(output_file)
                 try:
-                    print(output_file.is_file())
                     if output_file.is_file():
                         open(output_file, 'rb')
                         break

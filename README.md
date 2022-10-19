@@ -48,7 +48,7 @@ $ cd ..
 $ pip install -r requirements.txt
 ```
 
-# Executando e testando
+## Executando e testando
 
 Para executar o servidor socket utilize:
 
@@ -57,9 +57,11 @@ $ python server.py
 ```
 
 É aceito um endereço como parametro de execução e tem como default localhost
+Além disso é possível passar a porta como uma flag indicando a porta a ser utilizada
 
 ```
 $ python server.py 192.168.0.1
+$ python server.py 192.168.0.1 -p 1060
 ```
 Para o broker é necessário informar os endereços utilizados pelos servers no arquivo
 connections.json que contém um array de objetos contendo cada host e suas portas
@@ -82,7 +84,7 @@ Após a execução do código teremos x pastas resultantes, na seguinte estrutur
 	│   ├── input_n.zip
 	│   └── file_n.zip
 	│
-	├── OtputFiles
+	├── OutputFiles
 	│   ├── output_0.txt -> Saída do programa 0
 	│   └── output_n.txt
 	│

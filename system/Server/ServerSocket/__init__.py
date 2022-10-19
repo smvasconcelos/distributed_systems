@@ -33,6 +33,7 @@ class ServerSocket(threading.Thread):
         self.info = {}
         self.file_path = "RecievedFiles"
         self.file_name = ""
+        self.data = b""
         self.program_info = {}
 
     def run(self):
@@ -56,24 +57,24 @@ class ServerSocket(threading.Thread):
                 }
             }
             """
-            data = b""
             while True:
                 message = self.sock.recv(1024)
                 if not message:
                     break
-                data += message
+                self.data += message
                 try:
-                    pickle.loads(data)
+                    pickle.loads(self.data)
                     break
                 except:
                     pass
 
-            if data:
+            if self.data:
                 print("Loading json ...")
-                self.info = pickle.loads(data)
-                Path(f"RecievedFiles").mkdir(parents=True, exist_ok=True)
+                self.info = pickle.loads(self.data)
+                print(self.info["file"]["status"])
                 # Se não tiver dado erro
                 if self.info:
+                    Path(f"RecievedFiles").mkdir(parents=True, exist_ok=True)
                     # E o estado ainda for de escrita
                     # Salva os bytes do arquivo zip
                     if self.info["file"]["status"] == "write":
@@ -84,13 +85,14 @@ class ServerSocket(threading.Thread):
                             "wb+",
                         ) as f:
                             f.write(self.info["file"]["content"])
-                    # Se não o arquivo já foi enviado e podemos unzipa-lo e iniciar o processo de execução
-                    # Iniciamos a Rotina para chamar o programa enviado
-                    # Assim que o processo termina e é confirmado que o resultado foi salvo em um arquivo
-                    # Retornamos e tentamos abrir o arquivo
-                    # Caso esteja tudo okay, envia o resultado com status done
-                    # Caso não, 0 com o estado de error
-                    else:
+
+                        # Logo após já foi enviado e podemos unzipa-lo e iniciar o processo de execução
+                        # Iniciamos a Rotina para chamar o programa enviado
+                        # Assim que o processo termina e é confirmado que o resultado foi salvo em um arquivo
+                        # Retornamos e tentamos abrir o arquivo
+                        # Caso esteja tudo okay, envia o resultado com status done
+                        # Caso não, 0 com o estado de error
+                        self.data = b""
                         unzip_file(self.file_name)
                         print("Inicia a execução do programa depois de extrair o zip ...")
                         self.file_path = "RecievedFiles/{}/Files".format(self.file_name.replace(".zip", ""))
