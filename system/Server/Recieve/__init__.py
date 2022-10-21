@@ -99,14 +99,16 @@ class Recieve(threading.Thread):
                         self.process = Routine(self.file_path, self.program_info)
                         self.process.start()
                         self.process.join()
+                        print("Finalizado execução do programa enviado ...")
                         input_file_name = self.program_info["input"]
                         result = 0
                         try:
                             with open("OutputFiles/{}".format(input_file_name.replace("input", "output")), 'r') as f:
                                 result = f.read()
+                            print("Enviando resultado ...")
                             self.sock.send(f"{self.file_name},done,{result}".encode("ascii"))
                         except:
-                            print("Ocorreu um erro executando a rotina ...")
+                            print("Ocorreu um erro executando o programa enviado, arquivo de saída não encontrado ...")
                             self.sock.send(f"{self.file_name},error,{result}".encode("ascii"))
 
 
