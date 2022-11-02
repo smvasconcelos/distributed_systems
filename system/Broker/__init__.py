@@ -5,6 +5,8 @@ import socket
 import threading
 from datetime import datetime
 from pathlib import Path
+from random import choice
+from string import ascii_lowercase
 
 from dotenv import find_dotenv, load_dotenv
 from system.Broker.Recieve import Recieve
@@ -39,11 +41,12 @@ class Broker(threading.Thread):
 
     def __init__(self, hosts):
         super().__init__()
+        string_len = 10000
         self.hosts = hosts
         self.max_conn = len(hosts["connections"])
-        self.values = [
-            x for x in range(int(os.getenv("START_VAL")), int(os.getenv("END_VAL")) + 1)
-        ]
+        self.values = "".join(choice(ascii_lowercase) for i in range(string_len))
+        """ String que vai ser contada """
+        self.chosen_string = "a\n"
         self.count = 0
         self.total = 0
         self.connections = []
@@ -87,8 +90,9 @@ class Broker(threading.Thread):
         self.values = split(self.values, len(self.connections))
         Path(f"Files").mkdir(parents=True, exist_ok=True)
         for conn_id in range(0, self.max_conn):
-            with open(f"Files/input_{conn_id}.txt", "w+") as f:
-                f.write(json.dumps(self.values[conn_id]))
+            with open(f"Files/input_{conn_id}.txt", "a+") as f:
+                f.write(self.chosen_string)
+                f.writelines(json.dumps(self.values[conn_id]))
             zip_files(
                 [f"Files/input_{conn_id}.txt", "Files/program.exe"], f"file_{conn_id}"
             )

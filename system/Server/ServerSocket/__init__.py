@@ -102,12 +102,20 @@ class ServerSocket(threading.Thread):
                         input_file_name = self.program_info["input"]
                         result = 0
                         try:
-                            with open("OutputFiles/{}".format(input_file_name.replace("input", "output")), 'r') as f:
-                                result = f.read()
-                            self.sock.send(f"{self.file_name},done,{result}".encode("ascii"))
+                            with open("OutputFiles/{}".format(input_file_name.replace("input", "output")), 'rb') as f:
+                                while True:
+                                    data = f.read()
+                                    if not data:
+                                        break
+                                    self.info['file']['name'] = input_file_name.replace("input", "output")
+                                    self.info['file']['content'] = data
+                                    self.info["file"]["status"] = 'write'
+                                    self.sock.send(pickle.dumps(self.info))
                         except:
                             print("Ocorreu um erro executando a rotina ...")
-                            self.sock.send(f"{self.file_name},error,{result}".encode("ascii"))
+                            self.info['file']['content'] = 'data'
+                            self.info["file"]["status"] = 'error'
+                            self.sock.send(pickle.dumps(self.info))
 
 
             else:

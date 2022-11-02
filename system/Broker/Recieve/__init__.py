@@ -1,5 +1,7 @@
 """Configuração da classe resposável por receber mensagens do servidor"""
+import pickle
 import threading
+from pathlib import Path
 
 
 class Recieve(threading.Thread):
@@ -20,10 +22,12 @@ class Recieve(threading.Thread):
         self.sock = sock
         self.file = None
         self.info = {}
-        self.file_path = "RecievedFiles"
+        self.file_path = "ResultFiles"
         self.file_name = ""
         self.broker = broker
         self.program_info = {}
+        self.data = b''
+        Path(f"{self.file_path}").mkdir(parents=True, exist_ok=True)
 
     def run(self):
         """
@@ -34,10 +38,25 @@ class Recieve(threading.Thread):
             """
                 message : "file_name", "status", int result
             """
-            message = self.sock.recv(1024).decode("ascii")
-            if message:
-                file_name , status, result = message.split(",")
-                if status == "done":
-                    self.broker.sum_result(int(result))
+            while True:
+                message = self.sock.recv(1024)
+                if not message:
+                    break
+                self.data += message
+                try:
+                    pickle.loads(self.data)
+                    break
+                except:
+                    pass
+
+            if self.data:
+                self.info = pickle.loads(self.data)
+                if self.info["file"]["status"] != "error":
+                    with open(f"{self.file_path}/{self.info['file']['name']}", "wb+") as f:
+                        f.write(self.info["file"]["content"])
+
+                    with open(f"{self.file_path}/{self.info['file']['name']}", "r") as f:
+                        result = f.read()
+                        self.broker.sum_result(int(result))
                 else:
                     print(f"Ocorreu um erro executando o processo com o arquivo de nome: {file_name}")

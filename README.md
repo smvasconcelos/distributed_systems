@@ -88,12 +88,19 @@ Após a execução do código teremos x pastas resultantes, na seguinte estrutur
 	│   ├── output_0.txt -> Saída do programa 0
 	│   └── output_n.txt
 	│
+	├── ResultFiles -> Recebimento dos arquivos de output enviado pelos servers a serem gravados em Result/result.txt
+	│   ├── output_0.txt -> Saída do programa 0
+	│   └── output_n.txt
+	│
+	├── Result
+	│   └─── result.txt -> Soma de todos os resultados
+	│
 	├── RecievedFiles
 	│   ├── file_0.zip -> Arquivo enviado pelo servidor com o programa a ser executado com o seu respectivo input
-	│   └─── file_0
-	│          ├── Files
-	│          ├── input_0.txt -> Input do programa x
-	│          └── program.py -> Arquivo contendo a rotina pra ser executada no cliente
+	│   └── file_0
+	│       ├── Files
+	│       ├── input_0.txt -> Input do programa x
+	│       └── program.py -> Arquivo contendo a rotina pra ser executada no cliente
 	└── .env
 
 
