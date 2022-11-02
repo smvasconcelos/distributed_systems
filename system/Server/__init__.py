@@ -4,7 +4,7 @@ import threading
 
 from dotenv import find_dotenv, load_dotenv
 from system.Server import *
-from system.Server.ServerSocket import ServerSocket
+from system.Server.Recieve import Recieve
 
 load_dotenv(find_dotenv())
 
@@ -14,7 +14,7 @@ class Server(threading.Thread):
 
     Attributes:
 
-            connections (list): Lista de objetos ServerSocket que representam as conexões ativas.
+            connections (list): Lista de objetos Recieve que representam as conexões ativas.
 
             host (str): Endereço IP do socket de escuta.
 
@@ -33,8 +33,8 @@ class Server(threading.Thread):
         Cria o socket de escuta. O socket de escuta usará a opção SO_REUSEADDR para
         permitir a ligação a um endereço de socket usado anteriormente. Este é um aplicativo de pequena escala que
         suporta apenas uma conexão em espera por vez.
-        Para cada nova conexão, um thread ServerSocket é iniciado para facilitar a comunicação com
-        aquele cliente específico. Todos os objetos ServerSocket são armazenados no atributo connections.
+        Para cada nova conexão, um thread Recieve é iniciado para facilitar a comunicação com
+        aquele cliente específico. Todos os objetos Recieve são armazenados no atributo connections.
         """
         # AF_INET: address family, for IP networking
         # SOCK_STREAM: socket type, for reliable flow-controlled data stream
@@ -52,7 +52,7 @@ class Server(threading.Thread):
             print(f"Nova conexao de {sc.getpeername()} para {sc.getsockname()}")
 
             # new thread
-            server_socket = ServerSocket(sc, sockname)
+            server_socket = Recieve(sc, sockname)
             # start thread
             server_socket.start()
 
@@ -62,10 +62,10 @@ class Server(threading.Thread):
 
     def remove_connection(self, connection):
         """
-        Remove uma thread ServerSocket do atributo connections.
+        Remove uma thread Recieve do atributo connections.
 
         Args:
-                connection (ServerSocket): Thread ServerSocket a ser removida.
+                connection (Recieve): Thread Recieve a ser removida.
         """
         self.connections.remove(connection)
 

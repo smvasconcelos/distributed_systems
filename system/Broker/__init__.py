@@ -1,6 +1,7 @@
 """Configuração do broker"""
 import json
 import os
+import platform
 import socket
 import threading
 from datetime import datetime
@@ -88,15 +89,16 @@ class Broker(threading.Thread):
 
         print("Preparando rotinas ...")
         self.values = split(self.values, len(self.connections))
+        program_name = "program.exe" if platform.system() == "Windows" else "program.bin"
         Path(f"Files").mkdir(parents=True, exist_ok=True)
         for conn_id in range(0, self.max_conn):
             with open(f"Files/input_{conn_id}.txt", "a+") as f:
                 f.write(self.chosen_string)
                 f.writelines(json.dumps(self.values[conn_id]))
             zip_files(
-                [f"Files/input_{conn_id}.txt", "Files/program.exe"], f"file_{conn_id}"
+                [f"Files/input_{conn_id}.txt", f"Files/{program_name}"], f"file_{conn_id}"
             )
-            print(f"Zipped [input_{conn_id}.txt, program.py] => file_{conn_id}.zip ...")
+            print(f"Zipped [input_{conn_id}.txt, {program_name}] => file_{conn_id}.zip ...")
         self.start_routine()
 
     def start_routine(self):

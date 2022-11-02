@@ -1,5 +1,6 @@
 """Configuração da rotina do servidor"""
 import pickle
+import platform
 import threading
 
 
@@ -19,7 +20,7 @@ class Send(threading.Thread):
             },
             "program": {
                 "input": f"input_{id}.txt",
-                "exe": "program.exe"
+                "exe": "program.exe" if platform.system() == "Windows" else "program.bin"
             }
         }
 
