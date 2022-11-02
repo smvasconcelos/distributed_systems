@@ -9,12 +9,9 @@ from pathlib import Path
 from random import choice
 from string import ascii_lowercase
 
-from dotenv import find_dotenv, load_dotenv
 from system.Broker.Recieve import Recieve
 from system.Broker.Send import Send
 from system.Broker.utils import *
-
-load_dotenv(find_dotenv())
 
 
 class Broker(threading.Thread):
