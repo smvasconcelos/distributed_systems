@@ -29,8 +29,8 @@
 
         <h2>Submodules</h2>
         <ul>
+                <li><a href="Server/Recieve.html">Recieve</a></li>
                 <li><a href="Server/Routine.html">Routine</a></li>
-                <li><a href="Server/ServerSocket.html">ServerSocket</a></li>
         </ul>
 
         <h2>API Documentation</h2>
@@ -79,7 +79,7 @@
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">find_dotenv</span><span class="p">,</span> <span class="n">load_dotenv</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span> <span class="nn">system.Server</span> <span class="kn">import</span> <span class="o">*</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span> <span class="nn">system.Server.ServerSocket</span> <span class="kn">import</span> <span class="n">ServerSocket</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span> <span class="nn">system.Server.Recieve</span> <span class="kn">import</span> <span class="n">Recieve</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="n">load_dotenv</span><span class="p">(</span><span class="n">find_dotenv</span><span class="p">())</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
@@ -89,7 +89,7 @@
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">    Attributes:</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">            connections (list): Lista de objetos ServerSocket que representam as conexões ativas.</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">            connections (list): Lista de objetos Recieve que representam as conexões ativas.</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">            host (str): Endereço IP do socket de escuta.</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
@@ -108,8 +108,8 @@
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="sd">        Cria o socket de escuta. O socket de escuta usará a opção SO_REUSEADDR para</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="sd">        permitir a ligação a um endereço de socket usado anteriormente. Este é um aplicativo de pequena escala que</span>
 </span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="sd">        suporta apenas uma conexão em espera por vez.</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="sd">        Para cada nova conexão, um thread ServerSocket é iniciado para facilitar a comunicação com</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="sd">        aquele cliente específico. Todos os objetos ServerSocket são armazenados no atributo connections.</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="sd">        Para cada nova conexão, um thread Recieve é iniciado para facilitar a comunicação com</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="sd">        aquele cliente específico. Todos os objetos Recieve são armazenados no atributo connections.</span>
 </span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>        <span class="c1"># AF_INET: address family, for IP networking</span>
 </span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>        <span class="c1"># SOCK_STREAM: socket type, for reliable flow-controlled data stream</span>
@@ -127,7 +127,7 @@
 </span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nova conexao de </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getpeername</span><span class="p">()</span><span class="si">}</span><span class="s2"> para </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>
 </span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>            <span class="c1"># new thread</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>            <span class="n">server_socket</span> <span class="o">=</span> <span class="n">ServerSocket</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">sockname</span><span class="p">)</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>            <span class="n">server_socket</span> <span class="o">=</span> <span class="n">Recieve</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">sockname</span><span class="p">)</span>
 </span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>            <span class="c1"># start thread</span>
 </span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>            <span class="n">server_socket</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 </span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>
@@ -137,10 +137,10 @@
 </span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>
 </span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>    <span class="k">def</span> <span class="nf">remove_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection</span><span class="p">):</span>
 </span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a><span class="sd">        Remove uma thread ServerSocket do atributo connections.</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a><span class="sd">        Remove uma thread Recieve do atributo connections.</span>
 </span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>
 </span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a><span class="sd">        Args:</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a><span class="sd">                connection (ServerSocket): Thread ServerSocket a ser removida.</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a><span class="sd">                connection (Recieve): Thread Recieve a ser removida.</span>
 </span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 </span></pre></div>
@@ -164,7 +164,7 @@
 </span><span id="Server-15"><a href="#Server-15"><span class="linenos">15</span></a>
 </span><span id="Server-16"><a href="#Server-16"><span class="linenos">16</span></a><span class="sd">    Attributes:</span>
 </span><span id="Server-17"><a href="#Server-17"><span class="linenos">17</span></a>
-</span><span id="Server-18"><a href="#Server-18"><span class="linenos">18</span></a><span class="sd">            connections (list): Lista de objetos ServerSocket que representam as conexões ativas.</span>
+</span><span id="Server-18"><a href="#Server-18"><span class="linenos">18</span></a><span class="sd">            connections (list): Lista de objetos Recieve que representam as conexões ativas.</span>
 </span><span id="Server-19"><a href="#Server-19"><span class="linenos">19</span></a>
 </span><span id="Server-20"><a href="#Server-20"><span class="linenos">20</span></a><span class="sd">            host (str): Endereço IP do socket de escuta.</span>
 </span><span id="Server-21"><a href="#Server-21"><span class="linenos">21</span></a>
@@ -183,8 +183,8 @@
 </span><span id="Server-34"><a href="#Server-34"><span class="linenos">34</span></a><span class="sd">        Cria o socket de escuta. O socket de escuta usará a opção SO_REUSEADDR para</span>
 </span><span id="Server-35"><a href="#Server-35"><span class="linenos">35</span></a><span class="sd">        permitir a ligação a um endereço de socket usado anteriormente. Este é um aplicativo de pequena escala que</span>
 </span><span id="Server-36"><a href="#Server-36"><span class="linenos">36</span></a><span class="sd">        suporta apenas uma conexão em espera por vez.</span>
-</span><span id="Server-37"><a href="#Server-37"><span class="linenos">37</span></a><span class="sd">        Para cada nova conexão, um thread ServerSocket é iniciado para facilitar a comunicação com</span>
-</span><span id="Server-38"><a href="#Server-38"><span class="linenos">38</span></a><span class="sd">        aquele cliente específico. Todos os objetos ServerSocket são armazenados no atributo connections.</span>
+</span><span id="Server-37"><a href="#Server-37"><span class="linenos">37</span></a><span class="sd">        Para cada nova conexão, um thread Recieve é iniciado para facilitar a comunicação com</span>
+</span><span id="Server-38"><a href="#Server-38"><span class="linenos">38</span></a><span class="sd">        aquele cliente específico. Todos os objetos Recieve são armazenados no atributo connections.</span>
 </span><span id="Server-39"><a href="#Server-39"><span class="linenos">39</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Server-40"><a href="#Server-40"><span class="linenos">40</span></a>        <span class="c1"># AF_INET: address family, for IP networking</span>
 </span><span id="Server-41"><a href="#Server-41"><span class="linenos">41</span></a>        <span class="c1"># SOCK_STREAM: socket type, for reliable flow-controlled data stream</span>
@@ -202,7 +202,7 @@
 </span><span id="Server-53"><a href="#Server-53"><span class="linenos">53</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nova conexao de </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getpeername</span><span class="p">()</span><span class="si">}</span><span class="s2"> para </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span><span id="Server-54"><a href="#Server-54"><span class="linenos">54</span></a>
 </span><span id="Server-55"><a href="#Server-55"><span class="linenos">55</span></a>            <span class="c1"># new thread</span>
-</span><span id="Server-56"><a href="#Server-56"><span class="linenos">56</span></a>            <span class="n">server_socket</span> <span class="o">=</span> <span class="n">ServerSocket</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">sockname</span><span class="p">)</span>
+</span><span id="Server-56"><a href="#Server-56"><span class="linenos">56</span></a>            <span class="n">server_socket</span> <span class="o">=</span> <span class="n">Recieve</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">sockname</span><span class="p">)</span>
 </span><span id="Server-57"><a href="#Server-57"><span class="linenos">57</span></a>            <span class="c1"># start thread</span>
 </span><span id="Server-58"><a href="#Server-58"><span class="linenos">58</span></a>            <span class="n">server_socket</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 </span><span id="Server-59"><a href="#Server-59"><span class="linenos">59</span></a>
@@ -212,10 +212,10 @@
 </span><span id="Server-63"><a href="#Server-63"><span class="linenos">63</span></a>
 </span><span id="Server-64"><a href="#Server-64"><span class="linenos">64</span></a>    <span class="k">def</span> <span class="nf">remove_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection</span><span class="p">):</span>
 </span><span id="Server-65"><a href="#Server-65"><span class="linenos">65</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Server-66"><a href="#Server-66"><span class="linenos">66</span></a><span class="sd">        Remove uma thread ServerSocket do atributo connections.</span>
+</span><span id="Server-66"><a href="#Server-66"><span class="linenos">66</span></a><span class="sd">        Remove uma thread Recieve do atributo connections.</span>
 </span><span id="Server-67"><a href="#Server-67"><span class="linenos">67</span></a>
 </span><span id="Server-68"><a href="#Server-68"><span class="linenos">68</span></a><span class="sd">        Args:</span>
-</span><span id="Server-69"><a href="#Server-69"><span class="linenos">69</span></a><span class="sd">                connection (ServerSocket): Thread ServerSocket a ser removida.</span>
+</span><span id="Server-69"><a href="#Server-69"><span class="linenos">69</span></a><span class="sd">                connection (Recieve): Thread Recieve a ser removida.</span>
 </span><span id="Server-70"><a href="#Server-70"><span class="linenos">70</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Server-71"><a href="#Server-71"><span class="linenos">71</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 </span></pre></div>
@@ -225,7 +225,7 @@
 
 <p>Attributes:</p>
 
-<pre><code>    connections (list): Lista de objetos ServerSocket que representam as conexões ativas.
+<pre><code>    connections (list): Lista de objetos Recieve que representam as conexões ativas.
 
     host (str): Endereço IP do socket de escuta.
 
@@ -292,8 +292,8 @@ else to the thread.</p>
 </span><span id="Server.run-34"><a href="#Server.run-34"><span class="linenos">34</span></a><span class="sd">        Cria o socket de escuta. O socket de escuta usará a opção SO_REUSEADDR para</span>
 </span><span id="Server.run-35"><a href="#Server.run-35"><span class="linenos">35</span></a><span class="sd">        permitir a ligação a um endereço de socket usado anteriormente. Este é um aplicativo de pequena escala que</span>
 </span><span id="Server.run-36"><a href="#Server.run-36"><span class="linenos">36</span></a><span class="sd">        suporta apenas uma conexão em espera por vez.</span>
-</span><span id="Server.run-37"><a href="#Server.run-37"><span class="linenos">37</span></a><span class="sd">        Para cada nova conexão, um thread ServerSocket é iniciado para facilitar a comunicação com</span>
-</span><span id="Server.run-38"><a href="#Server.run-38"><span class="linenos">38</span></a><span class="sd">        aquele cliente específico. Todos os objetos ServerSocket são armazenados no atributo connections.</span>
+</span><span id="Server.run-37"><a href="#Server.run-37"><span class="linenos">37</span></a><span class="sd">        Para cada nova conexão, um thread Recieve é iniciado para facilitar a comunicação com</span>
+</span><span id="Server.run-38"><a href="#Server.run-38"><span class="linenos">38</span></a><span class="sd">        aquele cliente específico. Todos os objetos Recieve são armazenados no atributo connections.</span>
 </span><span id="Server.run-39"><a href="#Server.run-39"><span class="linenos">39</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Server.run-40"><a href="#Server.run-40"><span class="linenos">40</span></a>        <span class="c1"># AF_INET: address family, for IP networking</span>
 </span><span id="Server.run-41"><a href="#Server.run-41"><span class="linenos">41</span></a>        <span class="c1"># SOCK_STREAM: socket type, for reliable flow-controlled data stream</span>
@@ -311,7 +311,7 @@ else to the thread.</p>
 </span><span id="Server.run-53"><a href="#Server.run-53"><span class="linenos">53</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nova conexao de </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getpeername</span><span class="p">()</span><span class="si">}</span><span class="s2"> para </span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span><span id="Server.run-54"><a href="#Server.run-54"><span class="linenos">54</span></a>
 </span><span id="Server.run-55"><a href="#Server.run-55"><span class="linenos">55</span></a>            <span class="c1"># new thread</span>
-</span><span id="Server.run-56"><a href="#Server.run-56"><span class="linenos">56</span></a>            <span class="n">server_socket</span> <span class="o">=</span> <span class="n">ServerSocket</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">sockname</span><span class="p">)</span>
+</span><span id="Server.run-56"><a href="#Server.run-56"><span class="linenos">56</span></a>            <span class="n">server_socket</span> <span class="o">=</span> <span class="n">Recieve</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">sockname</span><span class="p">)</span>
 </span><span id="Server.run-57"><a href="#Server.run-57"><span class="linenos">57</span></a>            <span class="c1"># start thread</span>
 </span><span id="Server.run-58"><a href="#Server.run-58"><span class="linenos">58</span></a>            <span class="n">server_socket</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 </span><span id="Server.run-59"><a href="#Server.run-59"><span class="linenos">59</span></a>
@@ -324,8 +324,8 @@ else to the thread.</p>
             <div class="docstring"><p>Cria o socket de escuta. O socket de escuta usará a opção SO_REUSEADDR para
 permitir a ligação a um endereço de socket usado anteriormente. Este é um aplicativo de pequena escala que
 suporta apenas uma conexão em espera por vez.
-Para cada nova conexão, um thread ServerSocket é iniciado para facilitar a comunicação com
-aquele cliente específico. Todos os objetos ServerSocket são armazenados no atributo connections.</p>
+Para cada nova conexão, um thread Recieve é iniciado para facilitar a comunicação com
+aquele cliente específico. Todos os objetos Recieve são armazenados no atributo connections.</p>
 </div>
 
 
@@ -343,19 +343,19 @@ aquele cliente específico. Todos os objetos ServerSocket são armazenados no at
     <a class="headerlink" href="#Server.remove_connection"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Server.remove_connection-64"><a href="#Server.remove_connection-64"><span class="linenos">64</span></a>    <span class="k">def</span> <span class="nf">remove_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection</span><span class="p">):</span>
 </span><span id="Server.remove_connection-65"><a href="#Server.remove_connection-65"><span class="linenos">65</span></a>        <span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Server.remove_connection-66"><a href="#Server.remove_connection-66"><span class="linenos">66</span></a><span class="sd">        Remove uma thread ServerSocket do atributo connections.</span>
+</span><span id="Server.remove_connection-66"><a href="#Server.remove_connection-66"><span class="linenos">66</span></a><span class="sd">        Remove uma thread Recieve do atributo connections.</span>
 </span><span id="Server.remove_connection-67"><a href="#Server.remove_connection-67"><span class="linenos">67</span></a>
 </span><span id="Server.remove_connection-68"><a href="#Server.remove_connection-68"><span class="linenos">68</span></a><span class="sd">        Args:</span>
-</span><span id="Server.remove_connection-69"><a href="#Server.remove_connection-69"><span class="linenos">69</span></a><span class="sd">                connection (ServerSocket): Thread ServerSocket a ser removida.</span>
+</span><span id="Server.remove_connection-69"><a href="#Server.remove_connection-69"><span class="linenos">69</span></a><span class="sd">                connection (Recieve): Thread Recieve a ser removida.</span>
 </span><span id="Server.remove_connection-70"><a href="#Server.remove_connection-70"><span class="linenos">70</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Server.remove_connection-71"><a href="#Server.remove_connection-71"><span class="linenos">71</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Remove uma thread ServerSocket do atributo connections.</p>
+            <div class="docstring"><p>Remove uma thread Recieve do atributo connections.</p>
 
 <p>Args:
-        connection (ServerSocket): Thread ServerSocket a ser removida.</p>
+        connection (Recieve): Thread Recieve a ser removida.</p>
 </div>
 
 
