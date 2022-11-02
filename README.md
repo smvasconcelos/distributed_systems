@@ -69,11 +69,6 @@ que serão utilizadas como parametro para iniciar o socket
 ```
 $ python broker.py
 ```
-É possível também alterar o intervalo em que os valores somados serão gerados indicas também no .env
-```
-  START_VAL = 0
-  END_VAL = 100
-```
 Após a execução do código teremos x pastas resultantes, na seguinte estrutura:
 
 	root
