@@ -101,7 +101,6 @@ class Recieve(threading.Thread):
                         self.process.join()
                         print("Finalizado execução do programa enviado ...")
                         input_file_name = self.program_info["input"]
-                        result = 0
                         try:
                             with open("OutputFiles/{}".format(input_file_name.replace("input", "output")), 'rb') as f:
                                 while True:

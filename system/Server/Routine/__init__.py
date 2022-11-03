@@ -28,7 +28,6 @@ class Routine(threading.Thread):
         input_file = "{}/{}".format(self.folder, self.info["input"])
         output_file = "OutputFiles/{}".format(self.info["input"].replace("input", "output"))
         try:
-            # print(f"python {program} {input_file} {output_file}")
             if platform.system()  != "Windows":
                 os.system(f"chmod +x {program}")
             subprocess.run([program, input_file, output_file])

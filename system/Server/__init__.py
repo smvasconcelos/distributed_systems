@@ -2,11 +2,9 @@
 import socket
 import threading
 
-from dotenv import find_dotenv, load_dotenv
 from system.Server import *
 from system.Server.Recieve import Recieve
 
-load_dotenv(find_dotenv())
 
 class Server(threading.Thread):
     """
@@ -59,13 +57,3 @@ class Server(threading.Thread):
             # add thread to active connections
             self.connections.append(server_socket)
             print(f"Pronto para receber arquivos de {sc.getpeername()}")
-
-    def remove_connection(self, connection):
-        """
-        Remove uma thread Recieve do atributo connections.
-
-        Args:
-                connection (Recieve): Thread Recieve a ser removida.
-        """
-        self.connections.remove(connection)
-

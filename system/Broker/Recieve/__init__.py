@@ -59,4 +59,4 @@ class Recieve(threading.Thread):
                         result = f.read()
                         self.broker.sum_result(int(result))
                 else:
-                    print(f"Ocorreu um erro executando o processo com o arquivo de nome: {file_name}")
+                    print(f"Ocorreu um erro executando o processo com o arquivo de nome: {self.file_name}")
