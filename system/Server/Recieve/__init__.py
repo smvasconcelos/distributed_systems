@@ -6,13 +6,7 @@ import zipfile
 from pathlib import Path
 
 from system.Server.Routine import Routine
-
-
-def unzip_file(file_name):
-    """Unzipa um arquivo com o path file_name"""
-
-    with zipfile.ZipFile(f"RecievedFiles/{file_name}", 'r') as zip_ref:
-        zip_ref.extractall("RecievedFiles/{}".format(file_name.replace(".zip", "")))
+from system.utils import *
 
 class Recieve(threading.Thread):
     """
@@ -102,15 +96,17 @@ class Recieve(threading.Thread):
                         print("Finalizado execução do programa enviado ...")
                         input_file_name = self.program_info["input"]
                         try:
-                            with open("OutputFiles/{}".format(input_file_name.replace("input", "output")), 'rb') as f:
-                                while True:
-                                    data = f.read()
-                                    if not data:
-                                        break
-                                    self.info['file']['name'] = input_file_name.replace("input", "output")
-                                    self.info['file']['content'] = data
-                                    self.info["file"]["status"] = 'write'
-                                    self.sock.send(pickle.dumps(self.info))
+                          file_zip = "OutputFiles/{}".format(input_file_name.replace("input", "output"))
+                          zip_files([file_zip], file_zip.replace(".txt", ""))
+                          with open(file_zip.replace("txt", "zip"), 'rb') as f:
+                              while True:
+                                  data = f.read()
+                                  if not data:
+                                      break
+                                  self.info['file']['name'] = input_file_name.replace("input", "output")
+                                  self.info['file']['content'] = data
+                                  self.info["file"]["status"] = 'write'
+                                  self.sock.send(pickle.dumps(self.info))
                         except:
                             print("Ocorreu um erro executando a rotina ...")
                             self.info['file']['content'] = 'data'

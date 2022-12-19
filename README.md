@@ -99,8 +99,10 @@ Após a execução do código teremos x pastas resultantes, na seguinte estrutur
 	└── .env
 
 
-# Gerar documentação
+# Gerar documentação e exe
 
 ```
 $ pdoc server.py broker.py system -o docs
+$ nuitka --standalone --mingw64 server.py
+$ nuitka --standalone --mingw64 broker.py
 ```
