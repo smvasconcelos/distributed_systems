@@ -20,7 +20,7 @@ class Send(threading.Thread):
             },
             "program": {
                 "input": f"input_{id}.txt",
-                "exe": "program.exe" if platform.system() == "Windows" else "program.bin"
+                "exe": "program.exe" if platform.system() == "Windows" else "program"
             }
         }
 

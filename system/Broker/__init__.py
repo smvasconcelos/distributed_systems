@@ -37,14 +37,14 @@ class Broker(threading.Thread):
         routines: (list(Send)) Lista de threads com a rotirna de envio
     """
 
-    def __init__(self, hosts, chosen_text="" , chosen_string="a\n"):
+    def __init__(self, hosts, chosen_string="" , chosen_text="a\n"):
         super().__init__()
         string_len = 10000
         self.hosts = hosts
         self.max_conn = len(hosts["connections"])
         self.values = chosen_text if chosen_text != "" else "".join(choice(ascii_lowercase) for i in range(string_len))
         """ String que vai ser contada """
-        self.chosen_string = chosen_string if chosen_string != "" else "a\n"
+        self.chosen_string = chosen_string + "\n" if chosen_string != "" else "a\n"
         self.count = 0
         self.total = 0
         self.connections = []
@@ -86,7 +86,7 @@ class Broker(threading.Thread):
 
         print("Preparando rotinas ...")
         self.values = split(self.values, len(self.connections))
-        program_name = "program.exe" if platform.system() == "Windows" else "program.bin"
+        program_name = "program.exe" if platform.system() == "Windows" else "program"
 
         Path(f"Files").mkdir(parents=True, exist_ok=True)
 
