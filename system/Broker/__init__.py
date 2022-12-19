@@ -88,13 +88,9 @@ class Broker(threading.Thread):
         self.values = split(self.values, len(self.connections))
         program_name = "program.exe" if platform.system() == "Windows" else "program.bin"
 
-        # Confirma se está rodando a partir do exe ou normalmente, se for normalmente cria a pasta Files
-        try:
-          base_path = sys._MEIPASS
-        except:
-          Path(f"Files").mkdir(parents=True, exist_ok=True)
+        Path(f"Files").mkdir(parents=True, exist_ok=True)
 
-        files_path = resource_path('Files')
+        files_path = 'Files'
 
         for conn_id in range(0, self.max_conn):
             with open(f"{files_path}/input_{conn_id}.txt", "a+") as f:

@@ -41,13 +41,3 @@ def unzip_file(file_name):
 
     with zipfile.ZipFile(f"RecievedFiles/{file_name}", 'r') as zip_ref:
         zip_ref.extractall("RecievedFiles/{}".format(file_name.replace(".zip", "")))
-
-def resource_path(path):
-    """Recupera o caminho de um recurso da aplicação."""
-
-    try:
-        base_path = sys._MEIPASS
-    except:
-        base_path = os.path.relpath(".")
-
-    return os.path.join(base_path, path)
