@@ -37,14 +37,14 @@ class Broker(threading.Thread):
         routines: (list(Send)) Lista de threads com a rotirna de envio
     """
 
-    def __init__(self, hosts):
+    def __init__(self, hosts, chosen_text="" , chosen_string="a\n"):
         super().__init__()
         string_len = 10000
         self.hosts = hosts
         self.max_conn = len(hosts["connections"])
-        self.values = "".join(choice(ascii_lowercase) for i in range(string_len))
+        self.values = chosen_text if chosen_text != "" else "".join(choice(ascii_lowercase) for i in range(string_len))
         """ String que vai ser contada """
-        self.chosen_string = "a\n"
+        self.chosen_string = chosen_string if chosen_string != "" else "a\n"
         self.count = 0
         self.total = 0
         self.connections = []

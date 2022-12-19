@@ -1,5 +1,4 @@
 """Inicialização do servidor e suas rotinas"""
-import argparse
 import threading
 
 import system.utils as utils
@@ -7,13 +6,11 @@ from system.Server import Server
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description="CoffeChat Server")
-    parser.add_argument("host", nargs='?', default="localhost", help="Interface the server listens at")
-    parser.add_argument(
-        "-p", metavar="PORT", type=int, default=1060, help="TCP port (default 1060)"
-    )
-    args = parser.parse_args()
-    server = Server(args.host, args.p)
+    host = input('Host (default localhost): ')
+    host =  host if not host else 'localhost'
+    port = input('Port (default 1060): ')
+    port = 1060 if not port else int(port)
+    server = Server(host, port)
     server.start()
 
     exit = threading.Thread(target=utils.exit, args=(server,))
