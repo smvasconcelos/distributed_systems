@@ -103,6 +103,6 @@ Após a execução do código teremos x pastas resultantes, na seguinte estrutur
 
 ```
 $ pdoc server.py broker.py system -o docs
-$ nuitka --standalone --mingw64 server.py
-$ nuitka --standalone --mingw64 broker.py
+$ pyinstaller -F  server.py
+$ pyinstaller -F --add-data="Files;Files" broker.py
 ```

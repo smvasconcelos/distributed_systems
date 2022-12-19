@@ -10,3 +10,6 @@ RecievedFiles
 ResultFiles
 Include
 Result
+dist
+build
+*.spec

@@ -95,23 +95,23 @@ class Recieve(threading.Thread):
                         self.process.join()
                         print("Finalizado execução do programa enviado ...")
                         input_file_name = self.program_info["input"]
-                        try:
-                          file_zip = "OutputFiles/{}".format(input_file_name.replace("input", "output"))
-                          zip_files([file_zip], file_zip.replace(".txt", ""))
-                          with open(file_zip.replace("txt", "zip"), 'rb') as f:
-                              while True:
-                                  data = f.read()
-                                  if not data:
-                                      break
-                                  self.info['file']['name'] = input_file_name.replace("input", "output")
-                                  self.info['file']['content'] = data
-                                  self.info["file"]["status"] = 'write'
-                                  self.sock.send(pickle.dumps(self.info))
-                        except:
-                            print("Ocorreu um erro executando a rotina ...")
-                            self.info['file']['content'] = 'data'
-                            self.info["file"]["status"] = 'error'
-                            self.sock.send(pickle.dumps(self.info))
+                        # try:
+                        file_zip = "OutputFiles/{}".format(input_file_name.replace("input", "output"))
+                        zip_files([file_zip], file_zip.replace(".txt", ""))
+                        with open(file_zip.replace("txt", "zip"), 'rb') as f:
+                            while True:
+                                data = f.read()
+                                if not data:
+                                    break
+                                self.info['file']['name'] = input_file_name.replace("input", "output")
+                                self.info['file']['content'] = data
+                                self.info["file"]["status"] = 'write'
+                                self.sock.send(pickle.dumps(self.info))
+                        # except:
+                        #     print("Ocorreu um erro executando a rotina ...")
+                        #     self.info['file']['content'] = 'data'
+                        #     self.info["file"]["status"] = 'error'
+                        #     self.sock.send(pickle.dumps(self.info))
 
 
             else:

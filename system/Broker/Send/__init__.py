@@ -2,7 +2,7 @@
 import pickle
 import platform
 import threading
-
+from system.Broker.utils import *
 
 class Send(threading.Thread):
     """
@@ -26,7 +26,7 @@ class Send(threading.Thread):
 
     def run(self):
         try:
-            with open(f"Files/{self.message['file']['name']}", 'rb') as f:
+            with open(f"{resource_path('Files')}/{self.message['file']['name']}", 'rb') as f:
                 print("Enviando arquivo {}...".format(self.message["program"]["input"]))
                 while True:
                     data = f.read()
