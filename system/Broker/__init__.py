@@ -86,7 +86,7 @@ class Broker(threading.Thread):
 
         print("Preparando rotinas ...")
         self.values = split(self.values, len(self.connections))
-        program_name = "program.exe" if platform.system() == "Windows" else "program.bin"
+        program_name = "program.exe" if platform.system() == "Windows" else "program"
 
         Path(f"Files").mkdir(parents=True, exist_ok=True)
 

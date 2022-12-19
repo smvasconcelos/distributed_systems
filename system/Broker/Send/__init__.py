@@ -2,7 +2,9 @@
 import pickle
 import platform
 import threading
+
 from system.Broker.utils import *
+
 
 class Send(threading.Thread):
     """
@@ -20,7 +22,7 @@ class Send(threading.Thread):
             },
             "program": {
                 "input": f"input_{id}.txt",
-                "exe": "program.exe" if platform.system() == "Windows" else "program.bin"
+                "exe": "program.exe" if platform.system() == "Windows" else "program"
             }
         }
 
